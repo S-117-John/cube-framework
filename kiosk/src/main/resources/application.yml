@@ -1,0 +1,55 @@
+spring:
+  thymeleaf:
+    enabled: true  #开启thymeleaf视图解析
+    encoding: utf-8  #编码
+    prefix: classpath:/templates/  #前缀
+    cache: false  #是否使用缓存
+    mode: HTML  #严格的HTML语法模式
+    suffix: .html  #后缀名
+  profiles:
+    active: common,core,security
+  application:
+    name: kiosk
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.1.4:3306/kiosk?serverTimezone=UTC
+    username: root
+    password: 123456
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+  security:
+    user:
+      name: admin
+      password: 123456
+server:
+  port: 8080
+logging:
+  file:
+    path: ./logs
+
+
+neofaith:
+  url: http://14.116.207.43:8062/services/
+  token: 48616468f12748e3a26e1af4e793ec4b
+  hosId: f27fc323ba174cb9b4d1c6e062a4ae34
+
+
+Hardware:
+  scoketPort: 8899
+  ip1: 127.0.0.1
+  ip2: 127.0.0.1
+  ip3: 127.0.0.1
+
+
+
+app-pay:
+  mid: 1234567
+  tid1: 123131
+  tid2: 123131
+  tid3: 56567567
+  ip: 127.0.0.1
+  port: 8080
