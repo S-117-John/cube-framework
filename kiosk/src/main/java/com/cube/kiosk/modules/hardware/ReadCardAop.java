@@ -92,7 +92,7 @@ public class ReadCardAop {
             System.out.println("读取到卡号："+cardNo);
             if(StringUtils.isEmpty(cardNo)){
 
-                responseData.setCode(500);
+                responseData.setCode("500");
                 responseData.setData(null);
                 responseData.setType("ReadCard");
                 responseData.setMessage("没有获取到卡号");
@@ -105,7 +105,7 @@ public class ReadCardAop {
 
         } catch (Throwable throwable) {
 
-            responseData.setCode(500);
+            responseData.setCode("500");
             responseData.setData(null);
             responseData.setType("ReadCard");
             responseData.setMessage(throwable.getMessage());

@@ -1,9 +1,13 @@
 package com.cube.kiosk.modules.register.service.impl;
 
+import com.cube.kiosk.modules.common.ResponseHisData;
+import com.cube.kiosk.modules.common.model.HisData;
 import com.cube.kiosk.modules.common.model.ResultListener;
 import com.cube.kiosk.modules.common.utils.RestTemplate;
 import com.cube.kiosk.modules.register.model.RegisterParam;
 import com.cube.kiosk.modules.register.service.RegisterService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +27,8 @@ public class RegisterServiceImpl implements RegisterService {
             paramMap.put("cardTypeName","身份证");
             paramMap.put("cardId",param.getIdCard());
             paramMap.put("patienttype","1");
-            paramMap.put("patientname",param.getIdCard());
-            paramMap.put("guarname",param.getIdCard());
+            paramMap.put("patientname",param.getName());
+            paramMap.put("guarname","");
             paramMap.put("identityName","身份证");
             paramMap.put("identitycard",param.getIdCard());
             paramMap.put("sex",param.getSex());
@@ -42,7 +46,17 @@ public class RegisterServiceImpl implements RegisterService {
             paramMap.put("password","");
             paramMap.put("operatorid","");
             String result = restTemplate.doPostHisApi(paramMap,"his/cardIssuers");
-            listener.success(result);
+            Gson gson = new Gson();
+            ResponseHisData<String> responseHisData = gson.fromJson(result,ResponseHisData.class);
+            if(responseHisData.getCode()==1){
+                listener.error(responseHisData.getResponseData());
+                return;
+            }
+
+            if(responseHisData.getCode()==0){
+                listener.success(responseHisData.getResponseData());
+            }
+
         }catch (Exception e){
             listener.exception(e.getMessage());
         }

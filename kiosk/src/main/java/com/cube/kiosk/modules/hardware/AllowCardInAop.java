@@ -53,7 +53,7 @@ public class AllowCardInAop {
                 object = proceedingJoinPoint.proceed();
             }else{
                 ResponseData responseData = ResponseDatabase.newResponseData();
-                responseData.setCode(500);
+                responseData.setCode("500");
                 responseData.setData(result);
                 responseData.setType("AllowCardIn");
                 responseData.setMessage("允许进卡失败");
@@ -61,7 +61,7 @@ public class AllowCardInAop {
             }
         } catch (Throwable throwable) {
             ResponseData responseData = ResponseDatabase.newResponseData();
-            responseData.setCode(500);
+            responseData.setCode("500");
             responseData.setData(null);
             responseData.setType("AllowCardIn");
             responseData.setMessage("允许进卡失败:"+ throwable.getMessage());

@@ -4,6 +4,7 @@ import com.cube.kiosk.modules.security.model.HardWareDO;
 import com.cube.kiosk.modules.security.repository.HardWareRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,11 @@ public class HardWareRegisterService {
     public List<HardWareDO> getAllHardWare(){
         List<HardWareDO> hardWareList = hardWareRepository.findAll();
         return hardWareList;
+    }
+
+    @CacheEvict
+    public HardWareDO save(HardWareDO hardWareDO){
+        return hardWareRepository.save(hardWareDO);
     }
 
 }

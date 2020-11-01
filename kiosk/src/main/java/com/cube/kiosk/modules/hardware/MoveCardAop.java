@@ -55,7 +55,7 @@ public class MoveCardAop {
                 object = proceedingJoinPoint.proceed();
             }else{
 
-                responseData.setCode(500);
+                responseData.setCode("500");
                 responseData.setData(null);
                 responseData.setType("MoveCard");
                 responseData.setMessage("移动卡失败");
@@ -63,7 +63,7 @@ public class MoveCardAop {
             }
         } catch (Throwable throwable) {
 
-            responseData.setCode(500);
+            responseData.setCode("500");
             responseData.setData(null);
             responseData.setType("MoveCard");
             responseData.setMessage(throwable.getMessage());

@@ -53,7 +53,7 @@ public class CheckCardAop {
                 object = proceedingJoinPoint.proceed();
             }else{
 
-                responseData.setCode(500);
+                responseData.setCode("500");
                 responseData.setData(null);
                 responseData.setType("CheckCard");
                 responseData.setMessage("请插入您的就诊卡");
@@ -61,7 +61,7 @@ public class CheckCardAop {
             }
         } catch (Throwable throwable) {
 
-            responseData.setCode(500);
+            responseData.setCode("500");
             responseData.setData(null);
             responseData.setType("CheckCard");
             responseData.setMessage(throwable.getMessage());

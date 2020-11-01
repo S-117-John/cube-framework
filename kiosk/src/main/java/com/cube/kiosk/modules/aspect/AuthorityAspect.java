@@ -1,8 +1,10 @@
 package com.cube.kiosk.modules.aspect;
 
 import com.cube.common.utils.IpUtil;
+import com.cube.kiosk.modules.common.ResponseData;
 import com.cube.kiosk.modules.security.model.HardWareDO;
 import com.cube.kiosk.modules.security.service.HardWareRegisterService;
+import com.google.gson.Gson;
 import com.sun.javafx.binding.StringFormatter;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -21,8 +23,14 @@ public class AuthorityAspect {
 
     @Around(value = "@annotation(com.cube.kiosk.modules.anno.Access)")
     public Object around(ProceedingJoinPoint proceedingJoinPoint){
+        ResponseData<String> responseData = new ResponseData<>();
+        Gson gson = new Gson();
         String ip = IpUtil.getRemoteAddr(proceedingJoinPoint);
-        Object object = String.format("ip:[%s]自助机未注册",ip);
+        responseData.setCode("500");
+        responseData.setData(null);
+        responseData.setMessage(String.format("ip:[%s]自助机未注册",ip));
+        String result = gson.toJson(responseData);
+        Object object = result;
        try{
 
            List<HardWareDO> hardWareList = hardWareRegisterService.getAllHardWare();
@@ -32,7 +40,11 @@ public class AuthorityAspect {
                }
            }
        } catch (Throwable throwable) {
-           object = throwable.getMessage();
+           responseData.setCode("500");
+           responseData.setData(null);
+           responseData.setMessage(throwable.getMessage());
+           result = gson.toJson(responseData);
+           object = result;
        }
        return object;
     }

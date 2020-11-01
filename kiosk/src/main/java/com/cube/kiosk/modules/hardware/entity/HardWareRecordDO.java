@@ -3,10 +3,7 @@ package com.cube.kiosk.modules.hardware.entity;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Data
@@ -30,6 +27,7 @@ public class HardWareRecordDO {
 
     private String param;
 
+    @Column(length = 2000)
     private String result;
 
 

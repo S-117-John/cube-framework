@@ -10,6 +10,7 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.springframework.stereotype.Component;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -17,6 +18,7 @@ import javax.net.ssl.X509TrustManager;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+@Component
 public class SSLClient extends DefaultHttpClient {
 
     public SSLClient() throws Exception {
@@ -45,6 +47,7 @@ public class SSLClient extends DefaultHttpClient {
         SchemeRegistry sr = ccm.getSchemeRegistry();
         sr.register(new Scheme("https", 443, ssf));
     }
+
 
     public String doPost(String url, String map, String charset) {
         org.apache.http.client.HttpClient httpClient = null;

@@ -4,7 +4,7 @@ package com.cube.kiosk.modules.patient.service.impl;
 import com.cube.common.https.HttpsUtils;
 import com.cube.kiosk.modules.common.ResponseData;
 import com.cube.kiosk.modules.common.ResponseDatabase;
-import com.cube.kiosk.modules.common.ResultData;
+import com.cube.kiosk.modules.common.ResponseHisData;
 import com.cube.kiosk.modules.common.model.ResultListener;
 import com.cube.kiosk.modules.log.entity.HisLogDO;
 import com.cube.kiosk.modules.log.repository.HisLogRepository;
@@ -56,27 +56,27 @@ public class PatientServiceImpl implements PatientService {
             hisLogRepository.save(hisLogDO);
             //反序列化Patient
             Gson gson = new Gson();
-            ResultData<Object> resultData = gson.fromJson(result, new TypeToken<ResultData<Object>>(){}.getType());
-            if(resultData.getCode()==1){
-                responseData.setCode(500);
+            ResponseHisData<Object> responseHisData = gson.fromJson(result, new TypeToken<ResponseHisData<Object>>(){}.getType());
+            if(responseHisData.getCode()==1){
+                responseData.setCode("500");
                 responseData.setData(null);
-                responseData.setMessage(resultData.getResponseData().toString());
+                responseData.setMessage(responseHisData.getResponseData().toString());
                 linstener.error(responseData);
                 return;
             }
-            Patient patient = (Patient) resultData.getResponseData();
+            Patient patient = (Patient) responseHisData.getResponseData();
             map.put("identitycard", id);
             map.put("patientName", patient.getName());
             result = HttpsUtils.doPost(url+"his/getBalance", map);
-            resultData = gson.fromJson(result, new TypeToken<ResultData<Object>>(){}.getType());
-            if(resultData.getCode()==1){
-                responseData.setCode(500);
+            responseHisData = gson.fromJson(result, new TypeToken<ResponseHisData<Object>>(){}.getType());
+            if(responseHisData.getCode()==1){
+                responseData.setCode("500");
                 responseData.setData(null);
-                responseData.setMessage(resultData.getResponseData().toString());
+                responseData.setMessage(responseHisData.getResponseData().toString());
                 linstener.error(responseData);
                 return;
             }
-            Patient blance = (Patient) resultData.getResponseData();
+            Patient blance = (Patient) responseHisData.getResponseData();
             patient.setBalance(blance.getBalance());
             patient.setAmount(blance.getAmount());
             linstener.success(patient);

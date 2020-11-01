@@ -3,10 +3,7 @@ package com.cube.kiosk.modules.log.entity;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -21,8 +18,10 @@ public class HisHttpsLog {
 
     private Date createTime;
 
+    @Column(length = 3000)
     private String param;
 
+    @Column(length = 3000)
     private String result;
 
     private String note;

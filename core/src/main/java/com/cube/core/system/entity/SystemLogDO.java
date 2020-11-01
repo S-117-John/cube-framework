@@ -3,10 +3,7 @@ package com.cube.core.system.entity;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -28,6 +25,7 @@ public class SystemLogDO {
     private String method;
     private String params;
     private String ip;
+    @Column(length = 3000)
     private String result;
     private Date createDate;
 }

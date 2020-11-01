@@ -32,7 +32,7 @@ public class HardWareRegisterController {
         hardWareDO.setIp(param.getIp());
         hardWareDO.setName(param.getName());
         hardWareDO.setNote(param.getNote());
-        hardWareRepository.save(hardWareDO);
+        hardWareRegisterService.save(hardWareDO);
         hardWareRegisterService.getAllHardWare();
         return "保存成功";
     }

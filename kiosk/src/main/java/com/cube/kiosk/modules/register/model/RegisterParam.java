@@ -1,12 +1,13 @@
 package com.cube.kiosk.modules.register.model;
 
+import com.cube.kiosk.modules.common.model.BaseParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
 @ApiModel
-public class RegisterParam {
+public class RegisterParam extends BaseParam {
 
     @ApiModelProperty(name = "姓名")
     private String name;

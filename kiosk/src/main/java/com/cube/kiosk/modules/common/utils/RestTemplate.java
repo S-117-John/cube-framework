@@ -1,8 +1,11 @@
 package com.cube.kiosk.modules.common.utils;
 
 import com.cube.common.https.SSLClient;
+import com.cube.kiosk.modules.common.config.HttpsClientRequestFactory;
 import com.google.gson.Gson;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -20,9 +23,14 @@ public class RestTemplate extends org.springframework.web.client.RestTemplate {
     @Value("${neofaith.url}")
     private String hisUrl;
 
+    @Autowired
+    private SSLClient sslClient;
+
+
+
+
     public String doPostHisApi(Map<String,Object> result,String method) throws Exception {
         String charset = "utf-8";
-        SSLClient sslClient = new SSLClient();
         String token = this.token;
         String hosId = this.hosId;
         Map<String,Object> requestJson = new HashMap<>(16);
@@ -36,4 +44,6 @@ public class RestTemplate extends org.springframework.web.client.RestTemplate {
         String httpOrgCreateTestRtn = sslClient.doPost(this.hisUrl+method, b, charset);
         return httpOrgCreateTestRtn;
     }
+
+
 }
