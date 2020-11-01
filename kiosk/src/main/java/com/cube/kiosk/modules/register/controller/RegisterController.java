@@ -5,6 +5,7 @@ import com.cube.kiosk.modules.anno.Access;
 import com.cube.kiosk.modules.common.ResponseData;
 import com.cube.kiosk.modules.common.model.ResultListener;
 import com.cube.kiosk.modules.register.RegisterParamResolver;
+import com.cube.kiosk.modules.register.anno.RegisterCard;
 import com.cube.kiosk.modules.register.anno.RegisterResolver;
 import com.cube.kiosk.modules.register.model.RegisterParam;
 import com.cube.kiosk.modules.register.service.RegisterService;
@@ -47,7 +48,7 @@ public class RegisterController {
     @RequestMapping("")
     @SysLog("办卡")
     @Access
-    @RegisterResolver
+    @RegisterCard
     public String register(RegisterParam registerParam){
         final Object[] objects = new Object[1];
         registerService.register(registerParam, new ResultListener() {

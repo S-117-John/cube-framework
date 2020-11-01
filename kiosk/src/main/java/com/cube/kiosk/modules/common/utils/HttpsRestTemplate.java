@@ -19,7 +19,7 @@ public class HttpsRestTemplate{
     @Value("${app-pay.url}")
     private String url;
 
-    @Value("${sharedSecret}")
+    @Value("${app-pay.sharedSecret}")
     private String sharedSecret;
 
 
@@ -36,9 +36,9 @@ public class HttpsRestTemplate{
         headers.add("Accept", MediaType.APPLICATION_JSON.toString());
         String md5Sign = MD5Sign.md5(param+"&"+sharedSecret);
         headers.add("sign",md5Sign);
-        String httpBody = "";
+        String httpBody = param;
         HttpEntity<String> httpEntity = new HttpEntity<String>(httpBody, headers);
-        StringBuffer paramUrl = new StringBuffer(url);
+        StringBuffer paramUrl = new StringBuffer(url+method);
         URI uri = URI.create(paramUrl.toString());
         ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.GET,httpEntity,String.class);
         return responseEntity.getBody();

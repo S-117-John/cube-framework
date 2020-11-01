@@ -1,11 +1,11 @@
 package com.cube.kiosk.modules.pay.service;
 
 import com.cube.kiosk.modules.common.model.ResultListener;
-import com.cube.kiosk.modules.pay.model.RequestDataPay;
+import com.cube.kiosk.modules.pay.model.PayParam;
 
 public interface PayService {
 
-    void doPost(RequestDataPay requestDataPay, ResultListener linstener);
+    void getQrCode(PayParam payParam, ResultListener linstener);
 
-    void queryResult(RequestDataPay requestDataPay, ResultListener linstener);
+    void queryResult(PayParam payParam, ResultListener linstener);
 }

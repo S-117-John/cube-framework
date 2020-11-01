@@ -1,7 +1,9 @@
 package com.cube.kiosk.modules.aspect;
 
 import com.cube.kiosk.modules.log.entity.HisHttpsLog;
+import com.cube.kiosk.modules.log.entity.TransLogDO;
 import com.cube.kiosk.modules.log.repository.HisHttpsLogRepository;
+import com.cube.kiosk.modules.log.repository.TransLogRepository;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,21 +17,20 @@ import java.util.Date;
 public class HisHttpsLogAspect {
 
     @Autowired
-    private HisHttpsLogRepository hisHttpsLogRepository;
+    private TransLogRepository transLogRepository;
 
-    @AfterReturning(value = "execution(* com.cube.common.https.SSLClient.doPost(..))",returning = "object")
+    @AfterReturning(value = "execution(* com.cube.kiosk.modules.common.utils.HttpsRestTemplate.postForString(..))",returning = "object")
     public void doAfter(JoinPoint joinPoint, Object object){
        try{
            Object[] args = joinPoint.getArgs();
-           String url = args[0].toString();
-           String param = args[1].toString();
-           HisHttpsLog hisHttpsLog = new HisHttpsLog();
-           hisHttpsLog.setCreateTime(new Date());
-           hisHttpsLog.setNote(url);
-           hisHttpsLog.setParam(param);
-           String result = (String) object;
-           hisHttpsLog.setResult(result);
-           hisHttpsLogRepository.save(hisHttpsLog);
+           String param = args[0].toString();
+           String method = args[1].toString();
+           TransLogDO transLogDO = new TransLogDO();
+           transLogDO.setCreateTime(new Date());
+           transLogDO.setMethod(method);
+           transLogDO.setParam(param);
+           transLogDO.setResult((String) object);
+           transLogRepository.save(transLogDO);
        }catch (Exception e){
 
        }

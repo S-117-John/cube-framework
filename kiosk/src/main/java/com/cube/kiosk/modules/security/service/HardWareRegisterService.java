@@ -23,7 +23,7 @@ public class HardWareRegisterService {
         return hardWareList;
     }
 
-    @CacheEvict
+    @CacheEvict(cacheNames = "all")
     public HardWareDO save(HardWareDO hardWareDO){
         return hardWareRepository.save(hardWareDO);
     }

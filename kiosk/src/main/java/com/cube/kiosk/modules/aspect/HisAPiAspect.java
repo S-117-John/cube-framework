@@ -38,7 +38,7 @@ public class HisAPiAspect {
             }
             hisHttpsLogRepository.save(hisHttpsLog);
         }catch (Exception e){
-
+            e.printStackTrace();
         }
 
     }

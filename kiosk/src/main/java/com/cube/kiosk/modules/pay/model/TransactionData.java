@@ -3,7 +3,7 @@ package com.cube.kiosk.modules.pay.model;
 import lombok.Data;
 
 @Data
-public class RequestDataPay {
+public class TransactionData {
 
     /**
      * 设备终端编号
@@ -46,5 +46,8 @@ public class RequestDataPay {
      */
     private String tid;
 
-    private String requestIp;
+    /**
+     * 终端流水号
+     */
+    private String traceNo;
 }

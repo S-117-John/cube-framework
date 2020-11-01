@@ -19,8 +19,8 @@ public class RegisterParamResolver {
 
     public RegisterParam getParam(String param){
         Gson gson = new Gson();
-        RegisterParam registerParam = gson.fromJson(param,RegisterParam.class);
-
+        RegisterParam registerParam = new RegisterParam();
+        registerParam.setHardParam(param);
         if(!StringUtils.isEmpty(registerParam.getHardParam())){
             Document doc = null;
             try {

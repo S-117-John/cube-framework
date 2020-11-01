@@ -5,6 +5,7 @@ import com.cube.kiosk.modules.hardware.entity.HardWareRecordDO;
 import com.cube.kiosk.modules.hardware.repository.HardWareRecordRepository;
 import com.cube.kiosk.modules.register.RegisterParamResolver;
 import com.cube.kiosk.modules.register.model.RegisterParam;
+import com.google.gson.Gson;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -41,6 +42,26 @@ public class RegisterParamAspect {
         hardWareRecordDO.setResult(param);
         hardWareRecordRepository.save(hardWareRecordDO);
         RegisterParam registerParam = registerParamResolver.getParam(param);
+        Object[] args = joinPoint.getArgs();
+        args[0] = registerParam;
+        Object object = null;
+        try {
+            object = joinPoint.proceed(args);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        return object;
+    }
+
+    @Around(value = "@annotation(com.cube.kiosk.modules.register.anno.RegisterCard)")
+    public Object registerCard(ProceedingJoinPoint joinPoint){
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String param = request.getParameter("param");
+        String ip = IpUtil.getRemoteAddr(joinPoint);
+        Gson gson = new Gson();
+        RegisterParam registerParam = gson.fromJson(param,RegisterParam.class);
+
         Object[] args = joinPoint.getArgs();
         args[0] = registerParam;
         Object object = null;

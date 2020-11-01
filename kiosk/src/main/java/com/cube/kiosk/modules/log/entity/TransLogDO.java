@@ -1,4 +1,4 @@
-package com.cube.kiosk.modules.hardware.entity;
+package com.cube.kiosk.modules.log.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
@@ -6,10 +6,10 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.Date;
 
-@Data
 @Entity
-@Table(name = "HARD_WARE_RECORD")
-public class HardWareRecordDO {
+@Table(name = "TRANS_LOG")
+@Data
+public class TransLogDO {
 
     @Id
     @GeneratedValue(
@@ -25,11 +25,11 @@ public class HardWareRecordDO {
 
     private String ip;
 
+    @Column(length = 3000)
     private String param;
+
+    private String method;
 
     @Column(length = 3000)
     private String result;
-
-
-
 }

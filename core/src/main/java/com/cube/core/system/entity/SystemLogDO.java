@@ -23,6 +23,7 @@ public class SystemLogDO {
     private String username;
     private String operation;
     private String method;
+    @Column(length = 3000)
     private String params;
     private String ip;
     @Column(length = 3000)

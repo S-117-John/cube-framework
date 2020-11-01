@@ -21,4 +21,13 @@ public class HardWareDO {
     private String name;
 
     private String note;
+
+    @Column(nullable = false,unique = true)
+    private String posNo;
+
+    @Column(nullable = false)
+    private String tid;
+
+    @Column(nullable = false,length = 6)
+    private Integer traceNo;
 }
