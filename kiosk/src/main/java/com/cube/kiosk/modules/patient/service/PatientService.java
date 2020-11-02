@@ -1,6 +1,7 @@
 package com.cube.kiosk.modules.patient.service;
 
 import com.cube.kiosk.modules.common.model.ResultListener;
+import com.cube.kiosk.modules.patient.model.PatientParam;
 
 /**
  * @author LMZ
@@ -12,5 +13,5 @@ public interface PatientService {
      * @param id 卡号
      * @return
      */
-    void get(String id, ResultListener linstener);
+    void get(PatientParam patientParam, ResultListener linstener);
 }

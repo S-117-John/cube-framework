@@ -6,12 +6,15 @@ import com.cube.kiosk.modules.common.ResponseData;
 import com.cube.kiosk.modules.common.ResponseDatabase;
 import com.cube.kiosk.modules.common.ResponseHisData;
 import com.cube.kiosk.modules.common.model.ResultListener;
+import com.cube.kiosk.modules.common.utils.RestTemplate;
 import com.cube.kiosk.modules.log.entity.HisLogDO;
 import com.cube.kiosk.modules.log.repository.HisLogRepository;
 import com.cube.kiosk.modules.patient.model.Patient;
+import com.cube.kiosk.modules.patient.model.PatientParam;
 import com.cube.kiosk.modules.patient.service.PatientService;
 
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,61 +30,49 @@ import java.util.Map;
 @Service
 public class PatientServiceImpl implements PatientService {
 
-    @Value("${neofaith.url}")
-    private String url;
-
     @Autowired
-    private HisLogRepository hisLogRepository;
+    private RestTemplate restTemplate;
 
     /**
      * 获取病人信息
      *
-     * @param id        卡号
+     * @param patientParam
      * @param linstener
      * @return
      */
     @Override
-    public void get(String id, ResultListener linstener) {
-        Map<String,Object> map = new HashMap<>(16);
-        map.put("cardId",id);
-        ResponseData<Patient> responseData = ResponseDatabase.newResponseData();
-        HisLogDO hisLogDO = new HisLogDO();
-        hisLogDO.setParam(id);
-        hisLogDO.setMethod("getPatientnameInfo");
-        hisLogDO.setCreateTime(new Date());
+    public void get(PatientParam patientParam, ResultListener linstener) {
+        ResponseData<Patient> responseData = new ResponseData<>();
+        try{
+            Map<String,Object> paramMap = new HashMap<>(16);
 
-        try {
-            String result = HttpsUtils.doPost(url+"his/getPatientnameInfo", map);
-            hisLogDO.setResult(result);
-            hisLogRepository.save(hisLogDO);
-            //反序列化Patient
+            paramMap.put("cardId",patientParam.getCardNo());
+            String result = restTemplate.doPostHisApi(paramMap,"his/getPatientnameInfo");
             Gson gson = new Gson();
-            ResponseHisData<Object> responseHisData = gson.fromJson(result, new TypeToken<ResponseHisData<Object>>(){}.getType());
+            ResponseHisData<Object> responseHisData = gson.fromJson(result,ResponseHisData.class);
             if(responseHisData.getCode()==1){
                 responseData.setCode("500");
                 responseData.setData(null);
-                responseData.setMessage(responseHisData.getResponseData().toString());
+                responseData.setMessage((String) responseHisData.getResponseData());
                 linstener.error(responseData);
                 return;
             }
-            Patient patient = (Patient) responseHisData.getResponseData();
-            map.put("identitycard", id);
-            map.put("patientName", patient.getName());
-            result = HttpsUtils.doPost(url+"his/getBalance", map);
-            responseHisData = gson.fromJson(result, new TypeToken<ResponseHisData<Object>>(){}.getType());
-            if(responseHisData.getCode()==1){
-                responseData.setCode("500");
-                responseData.setData(null);
-                responseData.setMessage(responseHisData.getResponseData().toString());
-                linstener.error(responseData);
-                return;
+
+            if(responseHisData.getCode()==0){
+                LinkedTreeMap<String,Object> linkedTreeMap = (LinkedTreeMap<String, Object>) responseHisData.getResponseData();
+                Patient patient = new Patient();
+                patient.setName(linkedTreeMap.get("patientname").toString());
+                responseData.setCode("200");
+                responseData.setData(patient);
+                responseData.setMessage("success");
+                linstener.success(responseData);
             }
-            Patient blance = (Patient) responseHisData.getResponseData();
-            patient.setBalance(blance.getBalance());
-            patient.setAmount(blance.getAmount());
-            linstener.success(patient);
-        } catch (Exception e) {
-            linstener.exception(e.getMessage());
+
+        }catch (Exception e){
+            responseData.setCode("500");
+            responseData.setData(null);
+            responseData.setMessage(e.getMessage());
+            linstener.exception(responseData);
         }
     }
 }
