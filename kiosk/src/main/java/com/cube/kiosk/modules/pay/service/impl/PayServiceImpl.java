@@ -5,6 +5,7 @@ import com.cube.common.https.SSLClient;
 import com.cube.common.utils.SnowflakeIdWorker;
 import com.cube.kiosk.modules.common.model.ResultListener;
 import com.cube.kiosk.modules.common.utils.HttpsRestTemplate;
+import com.cube.kiosk.modules.common.utils.RestTemplate;
 import com.cube.kiosk.modules.pay.model.PayParam;
 import com.cube.kiosk.modules.pay.model.ResponseDataPay;
 import com.cube.kiosk.modules.pay.model.TransactionData;
@@ -36,6 +37,9 @@ public class PayServiceImpl implements PayService {
     @Autowired
     private HttpsRestTemplate httpsRestTemplate;
 
+
+    @Autowired
+    private RestTemplate restTemplate;
 
 
     public void doPost(PayParam payParam, ResultListener linstener) {
@@ -82,8 +86,8 @@ public class PayServiceImpl implements PayService {
         transactionData.setTid(payParam.getTid());
         Gson gson = new Gson();
         String transParam = gson.toJson(transactionData);
-        String result = httpsRestTemplate.postForString(transParam,"");
-        linstener.success("ad");
+        String result = restTemplate.doPostBankApi(transParam,"");
+        linstener.success(result);
     }
 
     @Override

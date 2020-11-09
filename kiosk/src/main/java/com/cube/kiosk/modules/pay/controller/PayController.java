@@ -48,4 +48,29 @@ public class PayController {
         });
        return "abc";
     }
+
+    @ApiOperation(httpMethod = "GET",value = "测试获取支付二维码")
+    @RequestMapping("test")
+    public String test(PayParam payParam){
+        final Object[] objects = new Object[1];
+        payService.getQrCode(payParam, new ResultListener() {
+            @Override
+            public void success(Object object) {
+                objects[0] = object;
+            }
+
+            @Override
+            public void error(Object object) {
+
+            }
+
+            @Override
+            public void exception(Object object) {
+
+            }
+        });
+        return (String) objects[0];
+    }
+
+
 }
