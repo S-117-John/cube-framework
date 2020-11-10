@@ -12,8 +12,10 @@ import com.cube.kiosk.modules.register.model.RegisterParam;
 import com.google.gson.Gson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -63,7 +65,7 @@ public class PayController {
         return gson.toJson(objects[0]) ;
     }
 
-    @ApiOperation(httpMethod = "GET",value = "测试获取支付二维码")
+    @ApiOperation(httpMethod = "POST",value = "测试获取支付二维码")
     @RequestMapping("test")
     public String test(PayParam payParam){
         final Object[] objects = new Object[1];
