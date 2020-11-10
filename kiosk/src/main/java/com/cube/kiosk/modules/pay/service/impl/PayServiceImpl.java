@@ -78,12 +78,12 @@ public class PayServiceImpl implements PayService {
         transactionData.setPosNo(payParam.getPosNo());
         transactionData.setTranType("F");
         transactionData.setTxnAmt("1");
-        transactionData.setTraceNo(payParam.getTraceNo());
+        transactionData.setTraceNo("000001");
         SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
         long id = idWorker.nextId();
         transactionData.setMerTradeNo(id+"");
         transactionData.setMid(mid);
-        transactionData.setTid(payParam.getTid());
+        transactionData.setTid("SNO5oYG1");
         Gson gson = new Gson();
         String transParam = gson.toJson(transactionData);
         String result = restTemplate.doPostBankApi(transParam,"");

@@ -13,4 +13,11 @@ public class MD5Sign {
             throw new RuntimeException("MD5签名过程中出现错误");
         }
     }
+
+    public static void main(String[] args) {
+
+        String param = "{\"posNo\":\"\",\"tranType\":\"F\",\"txnAmt\":\"1\",\"merTradeNo\":\"773139355878293504\",\"mid\":\"103610580626129\",\"tid\":\"\",\"traceNo\":\"000001\"}&Ke377y3ruJogSNx58GBz31DQ8zWbOpi8";
+        String result = md5(param);
+        System.out.println(result);
+    }
 }
