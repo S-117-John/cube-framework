@@ -32,7 +32,7 @@ public class RegisterController {
 
     @ApiOperation(httpMethod = "GET",value = "读取身份证信息")
     @RequestMapping("index")
-    @SysLog("办卡")
+    @SysLog("读取身份证信息")
     @Access
     @RegisterResolver
     public String index(RegisterParam registerParam){

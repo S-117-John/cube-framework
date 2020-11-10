@@ -2,10 +2,9 @@ package com.cube.kiosk.modules.aspect;
 
 import com.cube.common.utils.IpUtil;
 import com.cube.kiosk.modules.common.ResponseData;
-import com.cube.kiosk.modules.security.model.HardWareDO;
+import com.cube.kiosk.modules.security.model.HardWareConfigDO;
 import com.cube.kiosk.modules.security.service.HardWareRegisterService;
 import com.google.gson.Gson;
-import com.sun.javafx.binding.StringFormatter;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -33,9 +32,9 @@ public class AuthorityAspect {
         Object object = result;
        try{
 
-           List<HardWareDO> hardWareList = hardWareRegisterService.getAllHardWare();
-           for (HardWareDO hardWareDO : hardWareList) {
-               if(ip.equalsIgnoreCase(hardWareDO.getIp())){
+           List<HardWareConfigDO> hardWareList = hardWareRegisterService.getAllHardWare();
+           for (HardWareConfigDO hardWareConfigDO : hardWareList) {
+               if(ip.equalsIgnoreCase(hardWareConfigDO.getIp())){
                    object = proceedingJoinPoint.proceed();
                }
            }

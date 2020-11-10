@@ -1,6 +1,6 @@
 package com.cube.kiosk.modules.security.service;
 
-import com.cube.kiosk.modules.security.model.HardWareDO;
+import com.cube.kiosk.modules.security.model.HardWareConfigDO;
 import com.cube.kiosk.modules.security.repository.HardWareRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -17,15 +17,14 @@ public class HardWareRegisterService {
     @Autowired
     private HardWareRepository hardWareRepository;
 
-    @Cacheable(cacheNames = "all")
-    public List<HardWareDO> getAllHardWare(){
-        List<HardWareDO> hardWareList = hardWareRepository.findAll();
+
+    public List<HardWareConfigDO> getAllHardWare(){
+        List<HardWareConfigDO> hardWareList = hardWareRepository.findAll();
         return hardWareList;
     }
 
-    @CacheEvict(cacheNames = "all")
-    public HardWareDO save(HardWareDO hardWareDO){
-        return hardWareRepository.save(hardWareDO);
+    public HardWareConfigDO save(HardWareConfigDO hardWareConfigDO){
+        return hardWareRepository.save(hardWareConfigDO);
     }
 
 }

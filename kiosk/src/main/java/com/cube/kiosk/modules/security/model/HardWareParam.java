@@ -11,16 +11,19 @@ import javax.persistence.Column;
 public class HardWareParam {
 
 
-    @ApiModelProperty("自助机ip")
+    @ApiModelProperty(value = "自助机ip",required = true)
+    @Column(nullable = false)
     private String ip;
 
-    @ApiModelProperty("自助机名称")
+    @ApiModelProperty(value = "自助机名称",required = true)
+    @Column(nullable = false)
     private String name;
 
     @ApiModelProperty("备注")
     private String note;
 
     @ApiModelProperty(value = "设备唯一编号",required = true)
+    @Column(nullable = false)
     private String posNo;
 
     @ApiModelProperty(value = "终端号",required = true)
@@ -28,6 +31,6 @@ public class HardWareParam {
     private String tid;
 
     @ApiModelProperty(value = "终端流水号（初始写1）",required = true)
-    @Column(nullable = false,length = 6)
+    @Column(nullable = false)
     private Integer traceNo;
 }

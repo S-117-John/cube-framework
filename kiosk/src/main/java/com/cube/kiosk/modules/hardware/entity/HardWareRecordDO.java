@@ -24,7 +24,7 @@ public class HardWareRecordDO {
     private Date createTime;
 
     private String ip;
-
+    @Column(length = 3000)
     private String param;
 
     @Column(length = 3000)

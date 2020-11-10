@@ -5,6 +5,18 @@ import lombok.Data;
 @Data
 public class TransactionData {
 
+
+    /**
+     * 00 表示成功，其它表示失败
+     * 响应码
+     */
+    private String respCode;
+
+    /**
+     * 返回码解释信息
+     */
+    private String respMsg;
+
     /**
      * 设备终端编号
      * 唯一，可以不填写
@@ -42,12 +54,81 @@ public class TransactionData {
     private String mid;
 
     /**
+     * 商户名称
+     */
+    private String merName;
+
+    /**
      * 终端号
      */
     private String tid;
 
     /**
      * 终端流水号
+     * 终端号系统跟踪号，同请求报文原值返回，客户端收到应
+     * 答报文需要验证 traceNo 字段值，需与请求报文值一致，
+     * 如果不一致则丢包交易失败
      */
     private String traceNo;
+
+    /**
+     * 支付方式
+     * ZFBA-支付宝
+     * WEIX-微信
+     * UPAY-银联二维码
+     * DZZF-电子支付
+     */
+    private String payType;
+
+    /**
+     * 交易时间
+     */
+    private String txnTime;
+
+    /**
+     * 支付订单号
+     * 银行返回系统订单号，需要保存该支付交易订单号
+     */
+    private String tradeNo;
+
+    /**
+     * 第三方支付订单号
+     */
+    private String transNo;
+
+
+    /**
+     * 退款单号
+     * 商户系统退货单号，同请求一致
+     */
+    private String vfTradeNo;
+
+    /**
+     * 银行优惠金额
+     */
+    private String discountAmt;
+
+    /**
+     * 有效时间
+     * 二维码本身的有效时间，是相对时间，单位为秒，以接收
+     * 方收到报文时间为起始点计时。不同类型的订单以及不同
+     * 的订单状况会对应不同的默认有效时间和最大有效时间
+     * （可以为空）
+     */
+    private String qrValidTime;
+
+    /**
+     * 二维码信息
+     * 主扫支付二维码，以二维码形式显示，手机 APP 扫二维码
+     * 码消费
+     */
+    private String scanCode;
+
+    /**
+     * 订单数据
+     * 当 tranType 为 F 时，payType 值为 ZFBA 或 WEIX 时
+     * 支付宝返回的 tradeNo
+     * 或者微信返回的 prepayId
+     */
+    private String payData;
 }

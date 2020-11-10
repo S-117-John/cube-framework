@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Data
-@Table(name = "HIS_HTTPS_LOG")
+@Table(name = "HIS_LOG")
 public class HisHttpsLog {
 
     @Id

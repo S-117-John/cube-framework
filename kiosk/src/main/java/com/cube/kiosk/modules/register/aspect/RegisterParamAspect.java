@@ -35,11 +35,13 @@ public class RegisterParamAspect {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String param = request.getParameter("param");
+
+
         String ip = IpUtil.getRemoteAddr(joinPoint);
         HardWareRecordDO hardWareRecordDO = new HardWareRecordDO();
         hardWareRecordDO.setIp(ip);
         hardWareRecordDO.setCreateTime(new Date());
-        hardWareRecordDO.setResult(param);
+        hardWareRecordDO.setParam(param);
         hardWareRecordRepository.save(hardWareRecordDO);
         RegisterParam registerParam = registerParamResolver.getParam(param);
         Object[] args = joinPoint.getArgs();

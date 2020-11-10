@@ -1,7 +1,9 @@
 package com.cube.kiosk.modules.aspect;
 
 import com.cube.kiosk.modules.log.entity.HisHttpsLog;
+import com.cube.kiosk.modules.log.entity.TransLogDO;
 import com.cube.kiosk.modules.log.repository.HisHttpsLogRepository;
+import com.cube.kiosk.modules.log.repository.TransLogRepository;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,10 +15,13 @@ import java.util.Map;
 
 @Component
 @Aspect
-public class HisAPiAspect {
+public class RestTemplateAspect {
 
     @Autowired
     private HisHttpsLogRepository hisHttpsLogRepository;
+
+    @Autowired
+    private TransLogRepository transLogRepository;
 
     @AfterReturning(value = "execution(* com.cube.kiosk.modules.common.utils.RestTemplate.doPostHisApi(..))",returning = "object")
     public void doAfter(JoinPoint joinPoint, Object object){
@@ -37,6 +42,31 @@ public class HisAPiAspect {
                 hisHttpsLog.setNote("返回值为空");
             }
             hisHttpsLogRepository.save(hisHttpsLog);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    @AfterReturning(value = "execution(* com.cube.kiosk.modules.common.utils.RestTemplate.doPostBankApi(..))",returning = "object")
+    public void doPostBankApi(JoinPoint joinPoint, Object object){
+        TransLogDO transLogDO = new TransLogDO();
+        try {
+            Object[] objects = joinPoint.getArgs();
+            String param = "";
+            for (Object o : objects) {
+                if(o instanceof String){
+                    param = o.toString();
+                }
+            }
+            transLogDO.setCreateTime(new Date());
+            transLogDO.setParam(param);
+            if(object!=null){
+                transLogDO.setResult(object.toString());
+            }else {
+                transLogDO.setResult("返回值为空");
+            }
+            transLogRepository.save(transLogDO);
         }catch (Exception e){
             e.printStackTrace();
         }

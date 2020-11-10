@@ -1,12 +1,8 @@
 package com.cube.kiosk.modules.pay.aspect;
 
 import com.cube.common.utils.IpUtil;
-import com.cube.kiosk.modules.hardware.entity.HardWareRecordDO;
-import com.cube.kiosk.modules.hardware.repository.HardWareRecordRepository;
 import com.cube.kiosk.modules.pay.model.PayParam;
-import com.cube.kiosk.modules.register.RegisterParamResolver;
-import com.cube.kiosk.modules.register.model.RegisterParam;
-import com.cube.kiosk.modules.security.model.HardWareDO;
+import com.cube.kiosk.modules.security.model.HardWareConfigDO;
 import com.cube.kiosk.modules.security.repository.HardWareRepository;
 import com.google.gson.Gson;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -19,7 +15,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.NumberFormat;
-import java.util.Date;
 
 @Component
 @Aspect
@@ -37,10 +32,10 @@ public class PayParamAspect {
 
         Gson gson = new Gson();
         PayParam payParam = gson.fromJson(param,PayParam.class);
-        HardWareDO hardWareDO = hardWareRepository.findByIp(ip);
-        if(hardWareDO!=null){
-            payParam.setPosNo(hardWareDO.getPosNo());
-            payParam.setTid(hardWareDO.getTid());
+        HardWareConfigDO hardWareConfigDO = hardWareRepository.findByIp(ip);
+        if(hardWareConfigDO !=null){
+            payParam.setPosNo(hardWareConfigDO.getPosNo());
+            payParam.setTid(hardWareConfigDO.getTid());
             NumberFormat nf = NumberFormat.getInstance();
             //设置是否使用分组
             nf.setGroupingUsed(false);
@@ -48,10 +43,10 @@ public class PayParamAspect {
             nf.setMaximumIntegerDigits(6);
             //设置最小整数位数
             nf.setMinimumIntegerDigits(6);
-            payParam.setTraceNo(nf.format(hardWareDO.getTraceNo()));
+            payParam.setTraceNo(nf.format(hardWareConfigDO.getTraceNo()));
 
-            hardWareDO.setTraceNo(hardWareDO.getTraceNo()+1);
-            hardWareRepository.save(hardWareDO);
+            hardWareConfigDO.setTraceNo(hardWareConfigDO.getTraceNo()+1);
+            hardWareRepository.save(hardWareConfigDO);
         }
         Object[] args = joinPoint.getArgs();
         args[0] = payParam;

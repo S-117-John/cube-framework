@@ -8,8 +8,8 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "HARDWARE_INFO")
-public class HardWareDO {
+@Table(name = "HARDWARE_CONFIG")
+public class HardWareConfigDO {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")

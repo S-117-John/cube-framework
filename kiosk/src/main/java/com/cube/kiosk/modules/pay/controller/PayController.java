@@ -30,23 +30,37 @@ public class PayController {
     @Access
     @PayParamResolver
     public String index(PayParam payParam){
+        final Object[] objects = new Object[1];
+        Gson gson = new Gson();
         payService.getQrCode(payParam, new ResultListener() {
             @Override
             public void success(Object object) {
-
+                ResponseData<String> responseData = new ResponseData<>();
+                responseData.setCode("200");
+                responseData.setMessage("SUCCESS");
+                responseData.setData((String) object);
+                objects[0] = responseData;
             }
 
             @Override
             public void error(Object object) {
-
+                ResponseData<String> responseData = new ResponseData<>();
+                responseData.setCode("500");
+                responseData.setMessage((String) object);
+                responseData.setData(null);
+                objects[0] = responseData;
             }
 
             @Override
             public void exception(Object object) {
-
+                ResponseData<String> responseData = new ResponseData<>();
+                responseData.setCode("500");
+                responseData.setMessage((String) object);
+                responseData.setData(null);
+                objects[0] = responseData;
             }
         });
-       return "abc";
+        return gson.toJson(objects[0]) ;
     }
 
     @ApiOperation(httpMethod = "GET",value = "测试获取支付二维码")

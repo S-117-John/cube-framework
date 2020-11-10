@@ -1,26 +1,19 @@
 package com.cube.kiosk.modules.patient.service.impl;
 
 
-import com.cube.common.https.HttpsUtils;
 import com.cube.kiosk.modules.common.ResponseData;
-import com.cube.kiosk.modules.common.ResponseDatabase;
 import com.cube.kiosk.modules.common.ResponseHisData;
 import com.cube.kiosk.modules.common.model.ResultListener;
 import com.cube.kiosk.modules.common.utils.RestTemplate;
-import com.cube.kiosk.modules.log.entity.HisLogDO;
-import com.cube.kiosk.modules.log.repository.HisLogRepository;
 import com.cube.kiosk.modules.patient.model.Patient;
 import com.cube.kiosk.modules.patient.model.PatientParam;
 import com.cube.kiosk.modules.patient.service.PatientService;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,6 +1,6 @@
 package com.cube.kiosk.modules.security;
 
-import com.cube.kiosk.modules.security.model.HardWareDO;
+import com.cube.kiosk.modules.security.model.HardWareConfigDO;
 import com.cube.kiosk.modules.security.model.HardWareParam;
 import com.cube.kiosk.modules.security.repository.HardWareRepository;
 import com.cube.kiosk.modules.security.service.HardWareRegisterService;
@@ -28,22 +28,17 @@ public class HardWareRegisterController {
     @PostMapping("")
     @ApiOperation(httpMethod = "POST",value = "自助机注册")
     public String index(HardWareParam param){
-        HardWareDO hardWareDO = new HardWareDO();
-        hardWareDO.setIp(param.getIp());
-        hardWareDO.setName(param.getName());
-        hardWareDO.setNote(param.getNote());
-        hardWareDO.setPosNo(param.getPosNo());
-        hardWareDO.setTid(param.getTid());
-        hardWareDO.setTraceNo(param.getTraceNo());
-        hardWareRegisterService.save(hardWareDO);
-        hardWareRegisterService.getAllHardWare();
+        HardWareConfigDO hardWareConfigDO = new HardWareConfigDO();
+        hardWareConfigDO.setIp(param.getIp());
+        hardWareConfigDO.setName(param.getName());
+        hardWareConfigDO.setNote(param.getNote());
+        hardWareConfigDO.setPosNo(param.getPosNo());
+        hardWareConfigDO.setTid(param.getTid());
+        hardWareConfigDO.setTraceNo(param.getTraceNo());
+        hardWareRegisterService.save(hardWareConfigDO);
         return "保存成功";
     }
 
-    @GetMapping("")
-    @ApiOperation(httpMethod = "GET",value = "测试自助机注册缓存")
-    public List<HardWareDO> test(){
-        return hardWareRegisterService.getAllHardWare();
-    }
+
 
 }

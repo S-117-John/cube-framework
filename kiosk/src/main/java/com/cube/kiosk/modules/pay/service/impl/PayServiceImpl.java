@@ -7,14 +7,11 @@ import com.cube.kiosk.modules.common.model.ResultListener;
 import com.cube.kiosk.modules.common.utils.HttpsRestTemplate;
 import com.cube.kiosk.modules.common.utils.RestTemplate;
 import com.cube.kiosk.modules.pay.model.PayParam;
-import com.cube.kiosk.modules.pay.model.ResponseDataPay;
 import com.cube.kiosk.modules.pay.model.TransactionData;
 import com.cube.kiosk.modules.pay.service.PayService;
 import com.cube.kiosk.modules.pay.utils.IdWorker;
 
-import com.cube.kiosk.modules.security.repository.HardWareRepository;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -74,20 +71,30 @@ public class PayServiceImpl implements PayService {
 
     @Override
     public void getQrCode(PayParam payParam, ResultListener linstener) {
-        TransactionData transactionData = new TransactionData();
-        transactionData.setPosNo(payParam.getPosNo());
-        transactionData.setTranType("F");
-        transactionData.setTxnAmt("1");
-        transactionData.setTraceNo("000001");
-        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
-        long id = idWorker.nextId();
-        transactionData.setMerTradeNo(id+"");
-        transactionData.setMid(mid);
-        transactionData.setTid("SNO5oYG1");
-        Gson gson = new Gson();
-        String transParam = gson.toJson(transactionData);
-        String result = restTemplate.doPostBankApi(transParam,"");
-        linstener.success(result);
+        try{
+            TransactionData transactionData = new TransactionData();
+            transactionData.setPosNo(payParam.getPosNo());
+            transactionData.setTranType("F");
+            transactionData.setTxnAmt(payParam.getTxnAmt());
+            transactionData.setTraceNo(payParam.getTraceNo());
+            SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
+            long id = idWorker.nextId();
+            transactionData.setMerTradeNo(id+"");
+            transactionData.setMid(mid);
+            transactionData.setTid(payParam.getTid());
+            Gson gson = new Gson();
+            String transParam = gson.toJson(transactionData);
+            String result = restTemplate.doPostBankApi(transParam,"");
+            transactionData = gson.fromJson(result,TransactionData.class);
+            if("00".equals(transactionData.getRespCode())){
+                linstener.success(transactionData.getScanCode());
+            }else {
+                linstener.error(transactionData.getRespMsg());
+            }
+        }catch (Exception exception){
+            linstener.exception(exception.getMessage());
+        }
+
     }
 
     @Override
