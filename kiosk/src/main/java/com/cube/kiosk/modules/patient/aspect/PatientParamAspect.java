@@ -25,7 +25,12 @@ public class PatientParamAspect {
         String param = request.getParameter("param");
         String ip = IpUtil.getRemoteAddr(joinPoint);
         PatientParam patientParam = new PatientParam();
-        patientParam.setCardNo(param);
+        String a = param.substring(0,6);
+        String b = param.substring(7,10);
+        String c = param.substring(11,12);
+        String d = param.substring(13,14);
+        String e = param.substring(15,param.length());
+        patientParam.setCardNo(a+b+c+d+e);
         Object[] args = joinPoint.getArgs();
         args[0] = patientParam;
         Object object = null;
@@ -37,4 +42,13 @@ public class PatientParamAspect {
         return object;
     }
 
+    public static void main(String[] args) {
+        String param = "acc44509240804006263646566676869";
+        String a = param.substring(0,6);
+        String b = param.substring(7,10);
+        String c = param.substring(11,12);
+        String d = param.substring(13,14);
+        String e = param.substring(15,param.length());
+        System.out.println(a+b+c+d+e);
+    }
 }
