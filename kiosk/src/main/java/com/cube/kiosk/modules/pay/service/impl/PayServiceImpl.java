@@ -7,6 +7,7 @@ import com.cube.kiosk.modules.common.model.ResultListener;
 import com.cube.kiosk.modules.common.utils.HttpsRestTemplate;
 import com.cube.kiosk.modules.common.utils.RestTemplate;
 import com.cube.kiosk.modules.pay.model.PayParam;
+import com.cube.kiosk.modules.pay.model.TransQueryParam;
 import com.cube.kiosk.modules.pay.model.TransactionData;
 import com.cube.kiosk.modules.pay.service.PayService;
 import com.cube.kiosk.modules.pay.utils.IdWorker;
@@ -98,13 +99,11 @@ public class PayServiceImpl implements PayService {
     }
 
     @Override
-    public void queryResult(PayParam payParam, ResultListener linstener) {
+    public void queryResult(TransQueryParam transQueryParam, ResultListener linstener) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
             Gson gson = new Gson();
-            TransactionData transactionData = new TransactionData();
-
-            String transParam = gson.toJson(transactionData);
+            String transParam = gson.toJson(transQueryParam);
             Callable<String> task = new Callable<String>() {
                 @Override
                 public String call() throws Exception {
@@ -126,9 +125,9 @@ public class PayServiceImpl implements PayService {
             TransactionData transactionResultData = gson.fromJson(result,TransactionData.class);
 
             if("00".equals(transactionResultData.getRespCode())){
-                linstener.success(payParam);
+                linstener.success(transactionResultData);
             }else {
-                linstener.error(payParam);
+                linstener.error(transactionResultData);
             }
 
         } catch (Exception e) {

@@ -6,6 +6,8 @@ import com.cube.kiosk.modules.common.ResponseData;
 import com.cube.kiosk.modules.common.model.ResultListener;
 import com.cube.kiosk.modules.pay.anno.PayParamResolver;
 import com.cube.kiosk.modules.pay.model.PayParam;
+import com.cube.kiosk.modules.pay.model.TransQueryParam;
+import com.cube.kiosk.modules.pay.model.TransactionData;
 import com.cube.kiosk.modules.pay.service.PayService;
 import com.cube.kiosk.modules.register.anno.RegisterResolver;
 import com.cube.kiosk.modules.register.model.RegisterParam;
@@ -69,39 +71,38 @@ public class PayController {
     @RequestMapping("query")
     @SysLog("消费订单查询")
     @Access
-    @PayParamResolver
-    public String queryResult(PayParam payParam){
+    public ResponseData<TransactionData>  queryResult(TransQueryParam transQueryParam){
         final Object[] objects = new Object[1];
         Gson gson = new Gson();
-        payService.queryResult(payParam, new ResultListener() {
+        payService.queryResult(transQueryParam, new ResultListener() {
             @Override
             public void success(Object object) {
-                ResponseData<String> responseData = new ResponseData<>();
+                ResponseData<TransactionData> responseData = new ResponseData<>();
                 responseData.setCode("200");
                 responseData.setMessage("SUCCESS");
-                responseData.setData((String) object);
+                responseData.setData((TransactionData) object);
                 objects[0] = responseData;
             }
 
             @Override
             public void error(Object object) {
-                ResponseData<String> responseData = new ResponseData<>();
+                ResponseData<TransactionData> responseData = new ResponseData<>();
                 responseData.setCode("500");
-                responseData.setMessage((String) object);
-                responseData.setData(null);
+                responseData.setMessage("ERROR");
+                responseData.setData((TransactionData) object);
                 objects[0] = responseData;
             }
 
             @Override
             public void exception(Object object) {
-                ResponseData<String> responseData = new ResponseData<>();
+                ResponseData<TransactionData> responseData = new ResponseData<>();
                 responseData.setCode("500");
                 responseData.setMessage((String) object);
                 responseData.setData(null);
                 objects[0] = responseData;
             }
         });
-        return gson.toJson(objects[0]) ;
+        return (ResponseData<TransactionData>) objects[0];
     }
 
 
