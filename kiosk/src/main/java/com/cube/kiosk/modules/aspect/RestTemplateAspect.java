@@ -4,6 +4,9 @@ import com.cube.kiosk.modules.log.entity.HisHttpsLog;
 import com.cube.kiosk.modules.log.entity.TransLogDO;
 import com.cube.kiosk.modules.log.repository.HisHttpsLogRepository;
 import com.cube.kiosk.modules.log.repository.TransLogRepository;
+import com.cube.kiosk.modules.pay.model.TransactionData;
+import com.cube.kiosk.modules.pay.repository.TransactionRepository;
+import com.google.gson.Gson;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -22,6 +25,9 @@ public class RestTemplateAspect {
 
     @Autowired
     private TransLogRepository transLogRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @AfterReturning(value = "execution(* com.cube.kiosk.modules.common.utils.RestTemplate.doPostHisApi(..))",returning = "object")
     public void doAfter(JoinPoint joinPoint, Object object){
@@ -66,6 +72,10 @@ public class RestTemplateAspect {
             }else {
                 transLogDO.setResult("返回值为空");
             }
+            String rsult = object.toString();
+            Gson gson = new Gson();
+            TransactionData transactionData = gson.fromJson(rsult, TransactionData.class);
+            transactionRepository.save(transactionData);
             transLogRepository.save(transLogDO);
         }catch (Exception e){
             e.printStackTrace();

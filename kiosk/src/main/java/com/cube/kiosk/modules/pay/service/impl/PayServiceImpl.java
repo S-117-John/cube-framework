@@ -99,62 +99,43 @@ public class PayServiceImpl implements PayService {
 
     @Override
     public void queryResult(PayParam payParam, ResultListener linstener) {
-//        String charset = "utf-8";
-//        SSLClient sslClient = null;
-//        ExecutorService executorService = Executors.newSingleThreadExecutor();
-//        try {
-//            sslClient = new SSLClient();
-//            Map<String,Object> requestJson = new HashMap<>(16);
-//            Gson gson = new Gson();
-//            requestJson.put("posNo","");
-//            requestJson.put("tranType","G");
-//            requestJson.put("merTradeNo", payParam.getMerTradeNo());
-//            requestJson.put("tradeNo", "");
-//            requestJson.put("mid",mid);
-//            if(hardwareIp1.equals(payParam.getRequestIp())){
-//                requestJson.put("tid",tid1);
-//            }
-//            if(hardwareIp2.equals(payParam.getRequestIp())){
-//                requestJson.put("tid",tid2);
-//            }
-//            if(hardwareIp3.equals(payParam.getRequestIp())){
-//                requestJson.put("tid",tid3);
-//            }
-//            requestJson.put("txnAmt", payParam.getTxnAmt());
-//            String a = requestJson.toString();
-//            String b = a.substring(1,a.length()-1);
-//            SSLClient finalSslClient = sslClient;
-//            Callable<String> task = new Callable<String>() {
-//                @Override
-//                public String call() throws Exception {
-//
-//                    String result = "";
-//                    while (true){
-//                        result = finalSslClient.doPost("https://"+ip+":"+port+"/comlink-interface-abc-forward/comlink/pay", b, charset);
-//                        ResponseDataPay responseDataPay = gson.fromJson(result, new TypeToken<ResponseDataPay>(){}.getType());
-//                        if("00".equals(responseDataPay.getRespCode())){
-//                            return result;
-//                        }
-//                    }
-//                }
-//            };
-//
-//
-//            Future<String> future = executorService.submit(task);
-//            String result = future.get(10, TimeUnit.SECONDS);
-//            ResponseDataPay responseDataPay = gson.fromJson(result, new TypeToken<ResponseDataPay>(){}.getType());
-//
-//            if("00".equals(responseDataPay.getRespCode())){
-//                linstener.success(payParam);
-//            }else {
-//                linstener.error(payParam);
-//            }
-//
-//        } catch (Exception e) {
-//            linstener.exception(e.getMessage());
-//        }finally {
-//            executorService.shutdown();
-//        }
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        try {
+            Gson gson = new Gson();
+            TransactionData transactionData = new TransactionData();
+
+            String transParam = gson.toJson(transactionData);
+            Callable<String> task = new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+
+                    String result = "";
+                    while (true){
+                        result = restTemplate.doPostBankApi(transParam,"");
+                        TransactionData transactionData = gson.fromJson(result,TransactionData.class);
+                        if("00".equals(transactionData.getRespCode())){
+                            return result;
+                        }
+                    }
+                }
+            };
+
+
+            Future<String> future = executorService.submit(task);
+            String result = future.get(10, TimeUnit.SECONDS);
+            TransactionData transactionResultData = gson.fromJson(result,TransactionData.class);
+
+            if("00".equals(transactionResultData.getRespCode())){
+                linstener.success(payParam);
+            }else {
+                linstener.error(payParam);
+            }
+
+        } catch (Exception e) {
+            linstener.exception(e.getMessage());
+        }finally {
+            executorService.shutdown();
+        }
 
     }
 

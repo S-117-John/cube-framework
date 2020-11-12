@@ -12,7 +12,6 @@ import com.cube.kiosk.modules.register.model.RegisterParam;
 import com.google.gson.Gson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -64,6 +63,48 @@ public class PayController {
         });
         return gson.toJson(objects[0]) ;
     }
+
+
+    @ApiOperation(httpMethod = "GET",value = "消费订单查询")
+    @RequestMapping("query")
+    @SysLog("消费订单查询")
+    @Access
+    @PayParamResolver
+    public String queryResult(PayParam payParam){
+        final Object[] objects = new Object[1];
+        Gson gson = new Gson();
+        payService.queryResult(payParam, new ResultListener() {
+            @Override
+            public void success(Object object) {
+                ResponseData<String> responseData = new ResponseData<>();
+                responseData.setCode("200");
+                responseData.setMessage("SUCCESS");
+                responseData.setData((String) object);
+                objects[0] = responseData;
+            }
+
+            @Override
+            public void error(Object object) {
+                ResponseData<String> responseData = new ResponseData<>();
+                responseData.setCode("500");
+                responseData.setMessage((String) object);
+                responseData.setData(null);
+                objects[0] = responseData;
+            }
+
+            @Override
+            public void exception(Object object) {
+                ResponseData<String> responseData = new ResponseData<>();
+                responseData.setCode("500");
+                responseData.setMessage((String) object);
+                responseData.setData(null);
+                objects[0] = responseData;
+            }
+        });
+        return gson.toJson(objects[0]) ;
+    }
+
+
 
     @ApiOperation(httpMethod = "POST",value = "测试获取支付二维码")
     @RequestMapping("test")

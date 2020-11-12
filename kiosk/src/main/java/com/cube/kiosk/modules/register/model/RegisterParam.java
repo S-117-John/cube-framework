@@ -9,22 +9,22 @@ import lombok.Data;
 @ApiModel
 public class RegisterParam extends BaseParam {
 
-    @ApiModelProperty(name = "姓名")
+    @ApiModelProperty(value = "姓名")
     private String name;
 
-    @ApiModelProperty(name = "身份证号")
+    @ApiModelProperty(value = "身份证号")
     private String idCard;
 
-    @ApiModelProperty(name = "住址")
+    @ApiModelProperty(value = "住址")
     private String address;
 
-    @ApiModelProperty(name = "电话")
+    @ApiModelProperty(value = "电话")
     private String phone;
 
-    @ApiModelProperty(name = "性别")
+    @ApiModelProperty(value = "性别")
     private String sex;
 
-    @ApiModelProperty(name = "生日(yyyy-MM-dd)")
+    @ApiModelProperty(value = "生日(yyyy-MM-dd)")
     private String birthday;
 
 }

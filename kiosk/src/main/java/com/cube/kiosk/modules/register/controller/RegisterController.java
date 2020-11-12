@@ -44,9 +44,9 @@ public class RegisterController {
         return gson.toJson(responseData);
     }
 
-    @ApiOperation(httpMethod = "POST",value = "读取身份证信息")
+    @ApiOperation(httpMethod = "POST",value = "注册身份信息")
     @RequestMapping("")
-    @SysLog("办卡")
+    @SysLog("办卡.md")
     @Access
     @RegisterCard
     public String register(RegisterParam registerParam){
