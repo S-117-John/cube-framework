@@ -36,6 +36,7 @@ public class PayParamAspect {
         if(hardWareConfigDO !=null){
             payParam.setPosNo(hardWareConfigDO.getPosNo());
             payParam.setTid(hardWareConfigDO.getTid());
+            payParam.setTxnAmt(payParam.getMoney());
             NumberFormat nf = NumberFormat.getInstance();
             //设置是否使用分组
             nf.setGroupingUsed(false);

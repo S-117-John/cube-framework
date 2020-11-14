@@ -6,8 +6,11 @@ import com.cube.core.system.entity.SystemLogDO;
 import com.cube.core.system.repository.SystemLogRepository;
 import com.google.gson.Gson;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,13 +28,12 @@ public class SysLogAspect {
     @Autowired
     private SystemLogRepository systemLogRepository;
 
-    @AfterReturning(
-            value = "@annotation(com.cube.core.system.annotation.SysLog)",
-            returning = "object"
+    @Around(
+            value = "@annotation(com.cube.core.system.annotation.SysLog)"
     )
-    public void saveSysLog(JoinPoint joinPoint, Object object) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String param = request.getParameter("param");
+    public Object saveSysLog(ProceedingJoinPoint joinPoint) {
+//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//        String param = request.getParameter("param");
 
         SystemLogDO systemLog = new SystemLogDO();
         MethodSignature signature = (MethodSignature)joinPoint.getSignature();
@@ -47,14 +49,22 @@ public class SysLogAspect {
         String methodName = method.getName();
         systemLog.setMethod(className + "." + methodName);
         Object[] args = joinPoint.getArgs();
-        systemLog.setParams("");
         systemLog.setCreateDate(new Date());
         systemLog.setUsername("");
         systemLog.setIp(IpUtil.getRemoteAddr(joinPoint));
-        systemLog.setParams(param);
-        Gson gson = new Gson();
-        String ret = gson.toJson(object);
-        systemLog.setResult(ret);
+        Object object=null;
+        try{
+            Gson gson = new Gson();
+            String param = gson.toJson(args);
+            systemLog.setParams(param);
+            object = joinPoint.proceed();
+        }catch (Exception e){
+
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
         systemLogRepository.save(systemLog);
+        return object;
     }
 }

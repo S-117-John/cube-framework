@@ -69,4 +69,6 @@ public class PayParam {
      */
     @ApiModelProperty(value = "终端流水号")
     private String traceNo;
+
+    private String money;
 }

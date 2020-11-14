@@ -25,7 +25,16 @@ public class RegisterServiceImpl implements RegisterService {
         try{
             Map<String,Object> paramMap = new HashMap<>(16);
             paramMap.put("cardTypeName","身份证");
-            paramMap.put("cardId",param.getIdCard());
+            String cardNoParam = param.getCardNo().substring(0,32);
+            String a = cardNoParam.substring(0,6);
+            String b = cardNoParam.substring(7,10);
+            String c = cardNoParam.substring(11,12);
+            String d = cardNoParam.substring(13,14);
+            String e = cardNoParam.substring(15,cardNoParam.length());
+
+
+
+            paramMap.put("cardId",a+b+c+d+e);
             paramMap.put("patienttype","1");
             paramMap.put("patientname",param.getName());
             paramMap.put("guarname","");

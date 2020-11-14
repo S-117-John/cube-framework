@@ -17,9 +17,7 @@ import java.util.List;
 @Component
 public class RegisterParamResolver {
 
-    public RegisterParam getParam(String param){
-        RegisterParam registerParam = new RegisterParam();
-        registerParam.setHardParam(param);
+    public RegisterParam getParam(RegisterParam registerParam){
         if(!StringUtils.isEmpty(registerParam.getHardParam())){
             Document doc = null;
             try {
@@ -96,5 +94,8 @@ public class RegisterParamResolver {
 
         return registerParam;
     }
+
+
+
 
 }

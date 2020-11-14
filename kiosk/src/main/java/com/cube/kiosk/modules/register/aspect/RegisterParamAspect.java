@@ -30,7 +30,7 @@ public class RegisterParamAspect {
     private HardWareRecordRepository hardWareRecordRepository;
 
 
-    @Around(value = "@annotation(com.cube.kiosk.modules.register.anno.RegisterResolver)")
+//    @Around(value = "@annotation(com.cube.kiosk.modules.register.anno.RegisterResolver)")
     public Object around(ProceedingJoinPoint joinPoint){
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
@@ -43,7 +43,7 @@ public class RegisterParamAspect {
         hardWareRecordDO.setCreateTime(new Date());
         hardWareRecordDO.setParam(param);
         hardWareRecordRepository.save(hardWareRecordDO);
-        RegisterParam registerParam = registerParamResolver.getParam(param);
+        RegisterParam registerParam = registerParamResolver.getParam(null);
         Object[] args = joinPoint.getArgs();
         args[0] = registerParam;
         Object object = null;

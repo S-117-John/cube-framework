@@ -88,9 +88,9 @@ public class PayServiceImpl implements PayService {
             String result = restTemplate.doPostBankApi(transParam,"");
             transactionData = gson.fromJson(result,TransactionData.class);
             if("00".equals(transactionData.getRespCode())){
-                linstener.success(transactionData.getScanCode());
+                linstener.success(transactionData);
             }else {
-                linstener.error(transactionData.getRespMsg());
+                linstener.error(transactionData);
             }
         }catch (Exception exception){
             linstener.exception(exception.getMessage());

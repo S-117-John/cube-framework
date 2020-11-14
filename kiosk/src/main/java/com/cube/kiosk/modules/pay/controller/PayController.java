@@ -38,19 +38,19 @@ public class PayController {
         payService.getQrCode(payParam, new ResultListener() {
             @Override
             public void success(Object object) {
-                ResponseData<String> responseData = new ResponseData<>();
+                ResponseData<TransactionData> responseData = new ResponseData<>();
                 responseData.setCode("200");
                 responseData.setMessage("SUCCESS");
-                responseData.setData((String) object);
+                responseData.setData((TransactionData) object);
                 objects[0] = responseData;
             }
 
             @Override
             public void error(Object object) {
-                ResponseData<String> responseData = new ResponseData<>();
+                ResponseData<TransactionData> responseData = new ResponseData<>();
                 responseData.setCode("500");
-                responseData.setMessage((String) object);
-                responseData.setData(null);
+                responseData.setMessage("ERROR");
+                responseData.setData((TransactionData) object);
                 objects[0] = responseData;
             }
 

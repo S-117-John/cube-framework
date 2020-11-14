@@ -13,10 +13,7 @@ import com.google.gson.Gson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author YYF
@@ -29,14 +26,16 @@ public class RegisterController {
     @Autowired
     private RegisterService registerService;
 
-
-    @ApiOperation(httpMethod = "GET",value = "读取身份证信息")
+    @Autowired
+    private RegisterParamResolver registerParamResolver;
+    @ApiOperation(httpMethod = "POST",value = "读取身份证信息")
     @RequestMapping("index")
     @SysLog("读取身份证信息")
     @Access
-    @RegisterResolver
-    public String index(RegisterParam registerParam){
+//    @RegisterResolver
+    public String index(@RequestBody RegisterParam registerParam){
         Gson gson = new Gson();
+        registerParam = registerParamResolver.getParam(registerParam);
         ResponseData<RegisterParam> responseData = new ResponseData<>();
         responseData.setCode("200");
         responseData.setData(registerParam);
@@ -48,8 +47,8 @@ public class RegisterController {
     @RequestMapping("")
     @SysLog("办卡.md")
     @Access
-    @RegisterCard
-    public String register(RegisterParam registerParam){
+//    @RegisterCard
+    public String register(@RequestBody RegisterParam registerParam){
         final Object[] objects = new Object[1];
         registerService.register(registerParam, new ResultListener() {
             @Override
