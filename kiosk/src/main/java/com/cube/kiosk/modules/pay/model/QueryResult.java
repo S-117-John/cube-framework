@@ -4,18 +4,18 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+
 @Data
 @Entity
-@Table(name = "TRANS_RECORD")
+@Table(name = "QUERY_RESULT")
 @ApiModel
-public class TransactionData {
+public class QueryResult {
 
     @Id
     @GeneratedValue(
@@ -174,7 +174,7 @@ public class TransactionData {
     private String payData;
 
     @ApiModelProperty(value = "主扫交易当使用微信和支付宝支付成功后")
-        private String callBackUrl;
+    private String callBackUrl;
 
     private String cardNo;
 }

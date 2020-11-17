@@ -13,7 +13,12 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -28,12 +33,21 @@ public class SysLogAspect {
     @Autowired
     private SystemLogRepository systemLogRepository;
 
-    @Around(
+    @Autowired
+    private PlatformTransactionManager platformTransactionManager;
+    @Autowired
+    private TransactionDefinition transactionDefinition;
+
+    @Before(
             value = "@annotation(com.cube.core.system.annotation.SysLog)"
     )
-    public Object saveSysLog(ProceedingJoinPoint joinPoint) {
-//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//        String param = request.getParameter("param");
+    public void saveSysLog(JoinPoint joinPoint) {
+
+//        TransactionStatus transactionStatus = platformTransactionManager.getTransaction(transactionDefinition);
+
+
+
+//        platformTransactionManager.rollback(transactionStatus);
 
         SystemLogDO systemLog = new SystemLogDO();
         MethodSignature signature = (MethodSignature)joinPoint.getSignature();
@@ -51,20 +65,13 @@ public class SysLogAspect {
         Object[] args = joinPoint.getArgs();
         systemLog.setCreateDate(new Date());
         systemLog.setUsername("");
-        systemLog.setIp(IpUtil.getRemoteAddr(joinPoint));
+        systemLog.setIp(IpUtil.getRemoteAddr());
         Object object=null;
-        try{
-            Gson gson = new Gson();
-            String param = gson.toJson(args);
-            systemLog.setParams(param);
-            object = joinPoint.proceed();
-        }catch (Exception e){
+        Gson gson = new Gson();
+        String param = gson.toJson(args);
+        systemLog.setParams(param);
 
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-
+//        platformTransactionManager.commit(transactionStatus);
         systemLogRepository.save(systemLog);
-        return object;
     }
 }

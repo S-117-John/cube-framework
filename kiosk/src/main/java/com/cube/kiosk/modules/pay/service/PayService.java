@@ -8,5 +8,9 @@ public interface PayService {
 
     void getQrCode(PayParam payParam, ResultListener linstener);
 
-    void queryResult(TransQueryParam transQueryParam, ResultListener linstener);
+    void queryResult(String qrCodeUrl, ResultListener linstener);
+
+    void save(String tradeNo,ResultListener linstener);
+
+    void saveHospitalized(String tradeNo,ResultListener linstener);
 }

@@ -1,5 +1,6 @@
 package com.cube.kiosk.modules.patient.model;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
 /**
@@ -8,10 +9,13 @@ import lombok.Data;
 @Data
 public class Patient {
 
+//    @SerializedName("patientname")
     private String name;
 
+//    @SerializedName("sex")
     private String sex;
 
+//    @SerializedName("age")
     private String age;
 
     /**
@@ -23,4 +27,6 @@ public class Patient {
      * 总充值金额
      */
     private Double amount;
+
+    private String cardNo;
 }

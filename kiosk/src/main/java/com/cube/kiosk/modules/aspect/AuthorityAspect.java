@@ -24,7 +24,7 @@ public class AuthorityAspect {
     public Object around(ProceedingJoinPoint proceedingJoinPoint){
         ResponseData<String> responseData = new ResponseData<>();
         Gson gson = new Gson();
-        String ip = IpUtil.getRemoteAddr(proceedingJoinPoint);
+        String ip = IpUtil.getRemoteAddr();
         responseData.setCode("500");
         responseData.setData(null);
         responseData.setMessage(String.format("ip:[%s]自助机未注册",ip));

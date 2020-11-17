@@ -4,9 +4,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @ApiModel
-public class PayParam {
+public class PayParam implements Serializable {
 
     /**
      * 设备终端编号
@@ -70,5 +72,6 @@ public class PayParam {
     @ApiModelProperty(value = "终端流水号")
     private String traceNo;
 
+    @ApiModelProperty(value = "支付金额")
     private String money;
 }

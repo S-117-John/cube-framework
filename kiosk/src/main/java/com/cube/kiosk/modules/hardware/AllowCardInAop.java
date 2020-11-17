@@ -44,7 +44,7 @@ public class AllowCardInAop {
         hardWareRecordDO.setParam(inPutParam);
         Object object = null;
         try{
-            String ip = IpUtil.getRemoteAddr(proceedingJoinPoint);
+            String ip = IpUtil.getRemoteAddr();
             hardWareRecordDO.setIp(ip);
             Socket socket = SocketUtils.sendMessage(ip, MySocket.SOCKET_PORT,inPutParam);
             result = SocketUtils.reciveMessage(socket);

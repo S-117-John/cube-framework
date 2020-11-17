@@ -4,9 +4,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @ApiModel(description = "交易查询参数")
-public class TransQueryParam {
+public class TransQueryParam implements Serializable {
 
     @ApiModelProperty(value = "设备终端编号",required = true)
     private String posNo;

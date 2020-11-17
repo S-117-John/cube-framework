@@ -49,29 +49,25 @@ public class SSLClient extends DefaultHttpClient {
     }
 
 
-    public String doPost(String url, String map, String charset) {
+    public String doPost(String url, String map, String charset) throws Exception {
         org.apache.http.client.HttpClient httpClient = null;
         HttpPost httpPost = null;
         String result = null;
-        try {
-            httpClient = new SSLClient();
-            httpPost = new HttpPost(url);
-            //设置参数
-            httpPost.addHeader("Accept", "*/*");
-            httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
-            StringEntity stringEntity = new StringEntity(map);
-            stringEntity.setContentEncoding("UTF-8");
-            stringEntity.setContentType("application/json");
-            httpPost.setEntity(stringEntity);
-            HttpResponse response = httpClient.execute(httpPost);
-            if (response != null) {
-                HttpEntity resEntity = response.getEntity();
-                if (resEntity != null) {
-                    result = EntityUtils.toString(resEntity, charset);
-                }
+        httpClient = new SSLClient();
+        httpPost = new HttpPost(url);
+        //设置参数
+        httpPost.addHeader("Accept", "*/*");
+        httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        StringEntity stringEntity = new StringEntity(map);
+        stringEntity.setContentEncoding("UTF-8");
+        stringEntity.setContentType("application/json");
+        httpPost.setEntity(stringEntity);
+        HttpResponse response = httpClient.execute(httpPost);
+        if (response != null) {
+            HttpEntity resEntity = response.getEntity();
+            if (resEntity != null) {
+                result = EntityUtils.toString(resEntity, charset);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
         return result;
     }

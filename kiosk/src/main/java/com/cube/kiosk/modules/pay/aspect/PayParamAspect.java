@@ -28,7 +28,7 @@ public class PayParamAspect {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String param = request.getParameter("param");
-        String ip = IpUtil.getRemoteAddr(joinPoint);
+        String ip = IpUtil.getRemoteAddr();
 
         Gson gson = new Gson();
         PayParam payParam = gson.fromJson(param,PayParam.class);
@@ -66,7 +66,7 @@ public class PayParamAspect {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String param = request.getParameter("param");
-        String ip = IpUtil.getRemoteAddr(joinPoint);
+        String ip = IpUtil.getRemoteAddr();
 
         Gson gson = new Gson();
         PayParam payParam = gson.fromJson(param,PayParam.class);

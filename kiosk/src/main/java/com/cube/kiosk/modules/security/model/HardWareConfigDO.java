@@ -30,4 +30,5 @@ public class HardWareConfigDO {
 
     @Column(nullable = false,length = 6)
     private Integer traceNo;
+
 }

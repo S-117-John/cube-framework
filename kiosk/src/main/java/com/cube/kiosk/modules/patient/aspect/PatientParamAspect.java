@@ -18,19 +18,15 @@ import java.util.Date;
 @Aspect
 public class PatientParamAspect {
 
-    @Around(value = "@annotation(com.cube.kiosk.modules.patient.anno.PatientParamResolver)")
+
     public Object around(ProceedingJoinPoint joinPoint){
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String param = request.getParameter("param");
-        String ip = IpUtil.getRemoteAddr(joinPoint);
+        String ip = IpUtil.getRemoteAddr();
         PatientParam patientParam = new PatientParam();
-        String a = param.substring(0,6);
-        String b = param.substring(7,10);
-        String c = param.substring(11,12);
-        String d = param.substring(13,14);
-        String e = param.substring(15,param.length());
-        patientParam.setCardNo(a+b+c+d+e);
+
+
         Object[] args = joinPoint.getArgs();
         args[0] = patientParam;
         Object object = null;

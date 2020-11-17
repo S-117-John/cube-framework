@@ -13,5 +13,5 @@ public interface PatientService {
      * @param id 卡号
      * @return
      */
-    void get(PatientParam patientParam, ResultListener linstener);
+    void get(String cardNo, ResultListener linstener);
 }

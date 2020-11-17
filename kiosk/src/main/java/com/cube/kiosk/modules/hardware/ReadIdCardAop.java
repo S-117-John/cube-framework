@@ -34,7 +34,7 @@ public class ReadIdCardAop {
 
     @Around(value = "@annotation(com.cube.kiosk.modules.hardware.ReadIdCard)")
     public Object doBefore(ProceedingJoinPoint proceedingJoinPoint){
-        String ip = IpUtil.getRemoteAddr(proceedingJoinPoint);
+        String ip = IpUtil.getRemoteAddr();
         HardWareRecordDO hardWareRecordDO = new HardWareRecordDO();
         hardWareRecordDO.setCreateTime(new Date());
         hardWareRecordDO.setParam(inPutParam);

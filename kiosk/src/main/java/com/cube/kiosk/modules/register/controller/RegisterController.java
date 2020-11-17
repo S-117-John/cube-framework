@@ -31,8 +31,6 @@ public class RegisterController {
     @ApiOperation(httpMethod = "POST",value = "读取身份证信息")
     @RequestMapping("index")
     @SysLog("读取身份证信息")
-    @Access
-//    @RegisterResolver
     public String index(@RequestBody RegisterParam registerParam){
         Gson gson = new Gson();
         registerParam = registerParamResolver.getParam(registerParam);
@@ -46,8 +44,6 @@ public class RegisterController {
     @ApiOperation(httpMethod = "POST",value = "注册身份信息")
     @RequestMapping("")
     @SysLog("办卡.md")
-    @Access
-//    @RegisterCard
     public String register(@RequestBody RegisterParam registerParam){
         final Object[] objects = new Object[1];
         registerService.register(registerParam, new ResultListener() {

@@ -42,7 +42,7 @@ public class MoveCardAop {
     public Object doBefore(ProceedingJoinPoint proceedingJoinPoint){
         ResponseData responseData = ResponseDatabase.newResponseData();
         Object object = null;
-        String ip = IpUtil.getRemoteAddr(proceedingJoinPoint);
+        String ip = IpUtil.getRemoteAddr();
         HardWareRecordDO hardWareRecordDO = new HardWareRecordDO();
         hardWareRecordDO.setCreateTime(new Date());
         hardWareRecordDO.setParam(inPutParam);

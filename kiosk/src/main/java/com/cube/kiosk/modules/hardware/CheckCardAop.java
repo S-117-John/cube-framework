@@ -38,7 +38,7 @@ public class CheckCardAop {
     @Around(value = "@annotation(com.cube.kiosk.modules.hardware.CheckCard)")
     public Object doBefore(ProceedingJoinPoint proceedingJoinPoint){
         Object object = null;
-        String ip = IpUtil.getRemoteAddr(proceedingJoinPoint);
+        String ip = IpUtil.getRemoteAddr();
         ResponseData responseData = ResponseDatabase.newResponseData();
         HardWareRecordDO hardWareRecordDO = new HardWareRecordDO();
         hardWareRecordDO.setCreateTime(new Date());

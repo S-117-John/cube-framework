@@ -72,10 +72,6 @@ public class RestTemplateAspect {
             }else {
                 transLogDO.setResult("返回值为空");
             }
-            String rsult = object.toString();
-            Gson gson = new Gson();
-            TransactionData transactionData = gson.fromJson(rsult, TransactionData.class);
-            transactionRepository.save(transactionData);
             transLogRepository.save(transLogDO);
         }catch (Exception e){
             e.printStackTrace();

@@ -47,7 +47,7 @@ public class ReadCardAop {
     public Object doBefore(ProceedingJoinPoint proceedingJoinPoint){
         String cardNo = "";
         Object object = null;
-        String ip = IpUtil.getRemoteAddr(proceedingJoinPoint);
+        String ip = IpUtil.getRemoteAddr();
         HardWareRecordDO hardWareRecordDO = new HardWareRecordDO();
         hardWareRecordDO.setCreateTime(new Date());
         hardWareRecordDO.setParam(inPutParam);

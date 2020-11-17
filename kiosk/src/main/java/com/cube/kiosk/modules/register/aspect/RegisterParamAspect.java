@@ -37,7 +37,7 @@ public class RegisterParamAspect {
         String param = request.getParameter("param");
 
 
-        String ip = IpUtil.getRemoteAddr(joinPoint);
+        String ip = IpUtil.getRemoteAddr();
         HardWareRecordDO hardWareRecordDO = new HardWareRecordDO();
         hardWareRecordDO.setIp(ip);
         hardWareRecordDO.setCreateTime(new Date());
@@ -60,7 +60,7 @@ public class RegisterParamAspect {
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String param = request.getParameter("param");
-        String ip = IpUtil.getRemoteAddr(joinPoint);
+        String ip = IpUtil.getRemoteAddr();
         Gson gson = new Gson();
         RegisterParam registerParam = gson.fromJson(param,RegisterParam.class);
 

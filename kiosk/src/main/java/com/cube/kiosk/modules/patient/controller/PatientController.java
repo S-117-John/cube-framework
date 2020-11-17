@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,14 +23,13 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
 
-    @ApiOperation(httpMethod = "GET",value = "查询患者西悉尼")
+    @ApiOperation(httpMethod = "POST",value = "查询患者西悉尼")
     @RequestMapping("index")
     @SysLog("查询患者信息")
     @Access
-    @PatientParamResolver
-    public String index(PatientParam patientParam){
+    public String index(@RequestBody String cardNo){
         final Object[] objects = new Object[1];
-        patientService.get(patientParam, new ResultListener() {
+        patientService.get(cardNo, new ResultListener() {
             @Override
             public void success(Object object) {
                 objects[0] = object;
