@@ -7,6 +7,7 @@ import com.cube.kiosk.modules.common.model.ResultListener;
 import com.cube.kiosk.modules.common.utils.RestTemplate;
 import com.cube.kiosk.modules.patient.model.Patient;
 import com.cube.kiosk.modules.patient.model.PatientParam;
+import com.cube.kiosk.modules.patient.repository.PatientRepository;
 import com.cube.kiosk.modules.patient.service.PatientService;
 
 import com.google.gson.Gson;
@@ -25,6 +26,9 @@ public class PatientServiceImpl implements PatientService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private PatientRepository patientRepository;
 
     /**
      * 获取病人信息
@@ -68,6 +72,11 @@ public class PatientServiceImpl implements PatientService {
                 patient.setAge(linkedTreeMap.get("age").toString());
                 patient.setSex(linkedTreeMap.get("sex").toString());
                 patient.setCardNo(cardNo);
+                try{
+                    patientRepository.save(patient);
+                }catch (Exception e){
+
+                }
                 //查询余额
                 paramMap.put("patientname",patient.getName());
                 paramMap.put("identitycard",patient.getCardNo());

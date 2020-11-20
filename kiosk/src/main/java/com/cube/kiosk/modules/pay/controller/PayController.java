@@ -119,9 +119,9 @@ public class PayController {
     @ApiOperation(httpMethod = "POST",value = "充值")
     @RequestMapping("save")
     @SysLog("充值")
-    public ResponseData<String> save(@RequestBody String tradNo){
+    public ResponseData<String> save(@RequestBody String merTradeNo){
         final Object[] objects = new Object[1];
-        payService.save(tradNo, new ResultListener() {
+        payService.save(merTradeNo, new ResultListener() {
             @Override
             public void success(Object object) {
                 objects[0] = object;

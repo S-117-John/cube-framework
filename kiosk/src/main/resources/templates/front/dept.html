@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>科室</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bbootstrap 4 -->
+    <link rel="stylesheet" th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+    <!-- iCheck -->
+    <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" th:href="@{/plugins/jqvmap/jqvmap.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" th:href="@{/plugins/daterangepicker/daterangepicker.css}">
+    <!-- summernote -->
+    <link rel="stylesheet" th:href="@{/plugins/summernote/summernote-bs4.css}">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <style>
+        .title {
+            font-size: 24px;
+            color: #333333;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .inner {
+            padding: 28px 20px;
+            padding-right: 15px;
+            box-shadow: 0 0 15px #ccc;
+        }
+
+        .caption {
+            font-size: 22px;
+            color: #333333;
+            background: url(/images/kiosk/app-img1.png) repeat-x bottom left;
+            padding-bottom: 40px;
+            padding-top: 5px;
+            line-height: normal;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        .text {
+            font-size: 14px;
+            color: #474747;
+            line-height: 24px;
+            margin-top: 20px;
+        }
+
+        .top {
+            background: #015128;
+            line-height: 38px;
+            overflow: hidden;
+            text-align: right;
+            position: relative;
+            z-index: 10;
+            height: 38px;
+            margin-bottom: 20px;
+        }
+
+        .vertical {
+            padding: 0 6px;
+        }
+
+        .box {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .dept-btn {
+            display: inline-block;
+            width: 148px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        .caption {
+            font-size: 20px;
+            color: #474747;
+        }
+
+        .department .part1 .pubc-box1 {
+            margin-top: 2px;
+
+            width: 102%;
+            margin-left: -1%;
+        }
+
+        ol, ul, li {
+            list-style: none outside none;
+            padding: 0;
+        }
+
+        .pubc-box1 li {
+            float: left;
+            margin-left: 15px;
+            cursor: pointer;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            width: 160px;
+            height: 38px;
+            line-height: 38px;
+            font-size: 14px;
+            margin-top: 14px;
+        }
+
+        .pubc-box1 li a {
+            padding-right: 10px;
+        }
+
+        .pubc-box1 li a {
+            display: block;
+            color: #333;
+            padding-left: 26px;
+            position: relative;
+        }
+
+        .ellipsis {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .pubc-box1 li a i {
+            position: absolute;
+            width: 14px;
+            left: 0;
+            top: 0;
+            height: 100%;
+            border-right: 1px solid #ccc;
+            background: url(/images/kiosk/ind_5.png) no-repeat center;
+        }
+
+
+    </style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+
+    <div id="head" th:include="front/head::common_head"></div>
+
+
+    <!--    非手术科室-->
+    <div id="m1" style="padding-top: 40px">
+        <div class="pubc-box1">
+            <ul class="clearfix">
+
+                <li th:each="dept,deptState : ${list}">
+                    <a class="dept-btn"
+                       th:href="@{'/front/dept/detail?id='+${dept.id}}"
+                       th:text="${dept.name}"
+                       style="background-color: #528eb5">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- ChartJS -->
+<script th:src="@{/plugins/chart.js/Chart.min.js}"></script>
+<!-- Sparkline -->
+<script th:src="@{/plugins/sparklines/sparkline.js}"></script>
+<!-- JQVMap -->
+<script th:src="@{/plugins/jqvmap/jquery.vmap.min.js}"></script>
+<script th:src="@{/plugins/jqvmap/maps/jquery.vmap.usa.js}"></script>
+<!-- jQuery Knob Chart -->
+<script th:src="@{/plugins/jquery-knob/jquery.knob.min.js}"></script>
+<!-- daterangepicker -->
+<script th:src="@{/plugins/moment/moment.min.js}"></script>
+<script th:src="@{/plugins/daterangepicker/daterangepicker.js}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script th:src="@{/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"></script>
+<!-- Summernote -->
+<script th:src="@{/plugins/summernote/summernote-bs4.min.js}"></script>
+<!-- overlayScrollbars -->
+<script th:src="@{/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script th:src="@{/dist/js/pages/dashboard.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<script th:src="@{/dist/js/demo.js}"></script>
+</body>
+</html>

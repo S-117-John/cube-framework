@@ -1,5 +1,6 @@
 package com.cube.kiosk.modules.pay.model;
 
+import com.cube.kiosk.modules.common.model.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,7 +16,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "TRANS_RECORD")
 @ApiModel
-public class TransactionData {
+public class TransactionData extends BaseEntity {
 
     @Id
     @GeneratedValue(

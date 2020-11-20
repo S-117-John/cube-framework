@@ -51,6 +51,7 @@ app-pay:
   url: https://tcc.taobao.com/cc/json/mobile_tel_segment.htm
   sharedSecret: mKowPRl2M8YoR6BP
   rsaEncId:
+  noticeUrl: http://127.0.0.1:8080/api/pay/notice
 
 
 knife4j:

@@ -3,10 +3,16 @@ package com.cube.kiosk.modules.patient.model;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * @author LMZ
  */
 @Data
+@Entity
+@Table(name = "PATIENT")
 public class Patient {
 
 //    @SerializedName("patientname")
@@ -28,5 +34,6 @@ public class Patient {
      */
     private Double amount;
 
+    @Id
     private String cardNo;
 }

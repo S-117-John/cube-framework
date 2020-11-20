@@ -7,9 +7,12 @@ import com.cube.common.utils.SnowflakeIdWorker;
 import com.cube.kiosk.modules.common.ResponseData;
 import com.cube.kiosk.modules.common.ResponseHisData;
 import com.cube.kiosk.modules.common.model.ResultListener;
+import com.cube.kiosk.modules.common.utils.HisMd5Sign;
 import com.cube.kiosk.modules.common.utils.HttpsRestTemplate;
 import com.cube.kiosk.modules.common.utils.RestTemplate;
 import com.cube.kiosk.modules.hardware.repository.HardWareRecordRepository;
+import com.cube.kiosk.modules.patient.model.Patient;
+import com.cube.kiosk.modules.patient.repository.PatientRepository;
 import com.cube.kiosk.modules.pay.model.PayParam;
 import com.cube.kiosk.modules.pay.model.QueryResult;
 import com.cube.kiosk.modules.pay.model.TransQueryParam;
@@ -27,11 +30,14 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
+import javax.transaction.Transactional;
 import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -61,6 +67,15 @@ public class PayServiceImpl implements PayService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private PatientRepository patientRepository;
+
+
+    @Value("${neofaith.token}")
+    private String token;
+
+    @Value("${neofaith.hosId}")
+    private String hosId;
 
     public void doPost(PayParam payParam, ResultListener linstener) {
         String charset = "utf-8";
@@ -113,7 +128,7 @@ public class PayServiceImpl implements PayService {
                 hardWareRepository.save(hardWareConfigDO);
             }
             TransactionData transactionData = new TransactionData();
-            transactionData.setCardNo(payParam.getCardNo());
+
             transactionData.setPosNo(payParam.getPosNo());
             transactionData.setTranType("F");
             transactionData.setTxnAmt(payParam.getTxnAmt());
@@ -125,11 +140,13 @@ public class PayServiceImpl implements PayService {
             transactionData.setTid(payParam.getTid());
             Gson gson = new Gson();
             String transParam = gson.toJson(transactionData);
-            //交易成功回调
-            transactionData.setCallBackUrl(callBack);
+
 
             String result = restTemplate.doPostBankApi(transParam,"");
             transactionData = gson.fromJson(result,TransactionData.class);
+            transactionData.setCardNo(payParam.getCardNo());
+            //交易成功回调
+            transactionData.setCallBackUrl(callBack);
             transactionRepository.save(transactionData);
             if("00".equals(transactionData.getRespCode())){
                 linstener.success(transactionData);
@@ -152,8 +169,10 @@ public class PayServiceImpl implements PayService {
         try {
             Gson gson = new Gson();
             TransactionData transactionData = transactionRepository.findByScanCode(qrCodeUrl);
-            transactionData.setTranType("G");
-            String transParam = gson.toJson(transactionData);
+            TransactionData queryTrans = new TransactionData();
+            BeanUtils.copyProperties(transactionData,queryTrans);
+            queryTrans.setTranType("G");
+            String transParam = gson.toJson(queryTrans);
             Callable<String> task = new Callable<String>() {
                 @Override
                 public String call() throws Exception {
@@ -195,27 +214,36 @@ public class PayServiceImpl implements PayService {
     }
 
     @Override
-    public void save(String tradeNo, ResultListener linstener) {
-        TransactionData transactionData = transactionRepository.findByMerTradeNoAndTranType(tradeNo,"F");
+    public void save(String merTradeNo, ResultListener linstener) {
+        TransactionData transactionData = transactionRepository.findByMerTradeNoAndTranType(merTradeNo,"F");
         ResponseData<String> responseData = new ResponseData<>();
         if(transactionData==null){
             responseData.setCode("500");
             responseData.setData("ERROR");
-            responseData.setMessage(String.format("根据商户订单号%s未查询到交易记录",tradeNo));
+            responseData.setMessage(String.format("根据商户订单号%s未查询到交易记录",merTradeNo));
             linstener.error(responseData);
             return;
         }
         Gson gson = new Gson();
         String cardNo = transactionData.getCardNo();
         String tradNo = transactionData.getTradeNo();
-        Map<String,Object> paramMap = new HashMap<>();
-        paramMap.put("cardID",cardNo);
-        paramMap.put("money","1");
-        paramMap.put("modeType","3");
-        paramMap.put("serialNumber",tradNo);
+        SortedMap<String, String> packageParams = new TreeMap<String, String>();
+        Patient patient = patientRepository.getOne(cardNo);
+        packageParams.put("cardID", cardNo);
+        packageParams.put("money", "1");
+        packageParams.put("modeType", "1");
+        packageParams.put("operatorid", "0102");
+        packageParams.put("patientName", patient.getName());
+        packageParams.put("serialNumber", merTradeNo);
+        packageParams.put("token", token);
+        packageParams.put("hosId", hosId);
+        String sign = HisMd5Sign.createSign(packageParams, token);
+        packageParams.put("sign", sign);
+        String param = gson.toJson(packageParams);
+
 
         try {
-           String result = restTemplate.doPostHisApi(paramMap,"his/payMedicalCard");
+           String result = restTemplate.doPostHisSaveApi(param,"his/payMedicalCard");
            if(StringUtils.isEmpty(result)){
                responseData.setCode("500");
                responseData.setData("ERROR");

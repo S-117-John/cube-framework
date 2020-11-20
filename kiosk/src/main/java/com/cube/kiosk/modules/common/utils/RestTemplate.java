@@ -10,12 +10,12 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class RestTemplate extends org.springframework.web.client.RestTemplate {
@@ -52,6 +52,34 @@ public class RestTemplate extends org.springframework.web.client.RestTemplate {
         String b = a.substring(1,a.length()-1);
         String httpOrgCreateTestRtn = sslClient.doPost(this.hisUrl+method, b, charset);
         return httpOrgCreateTestRtn;
+    }
+
+    public String doPostHisSaveApi(String param, String method) throws Exception {
+
+        org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate(new HttpsClientRequestFactory());
+        List<HttpMessageConverter<?>> converterList = getMessageConverters();
+        converterList.remove(1);    //移除StringHttpMessageConverter
+        HttpMessageConverter<?> converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
+        converterList.add(1, converter);    //convert顺序错误会导致失败
+        setMessageConverters(converterList);
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("application/x-www-form-urlencoded; charset=UTF-8");
+        headers.setContentType(type);
+        headers.add("Accept", MediaType.APPLICATION_JSON.toString());
+        String httpBody = param;
+        MultiValueMap<String, Object> postParameters = new LinkedMultiValueMap<>();
+        postParameters.put("requestJson", Collections.singletonList(param));
+
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<MultiValueMap<String, Object>>(postParameters, headers);
+        StringBuffer paramUrl = new StringBuffer(hisUrl+method);
+        URI uri = URI.create(paramUrl.toString());
+        ResponseEntity<String> responseEntity = exchange(uri, HttpMethod.POST,httpEntity,String.class);
+        return responseEntity.getBody();
+
+
+
+
+
     }
 
     public String doPostBankApi(String param,String method){

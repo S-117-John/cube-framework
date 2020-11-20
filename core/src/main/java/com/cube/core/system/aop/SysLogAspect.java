@@ -38,16 +38,10 @@ public class SysLogAspect {
     @Autowired
     private TransactionDefinition transactionDefinition;
 
-    @Before(
-            value = "@annotation(com.cube.core.system.annotation.SysLog)"
-    )
+//    @Before(
+//            value = "@annotation(com.cube.core.system.annotation.SysLog)"
+//    )
     public void saveSysLog(JoinPoint joinPoint) {
-
-//        TransactionStatus transactionStatus = platformTransactionManager.getTransaction(transactionDefinition);
-
-
-
-//        platformTransactionManager.rollback(transactionStatus);
 
         SystemLogDO systemLog = new SystemLogDO();
         MethodSignature signature = (MethodSignature)joinPoint.getSignature();
@@ -72,6 +66,34 @@ public class SysLogAspect {
         systemLog.setParams(param);
 
 //        platformTransactionManager.commit(transactionStatus);
+        systemLogRepository.save(systemLog);
+    }
+
+    @AfterReturning(value = "@annotation(com.cube.core.system.annotation.SysLog)",returning = "object")
+    public void saveSysResult(JoinPoint joinPoint,Object object) {
+
+        SystemLogDO systemLog = new SystemLogDO();
+        MethodSignature signature = (MethodSignature)joinPoint.getSignature();
+        Method method = signature.getMethod();
+        SysLog myLog = (SysLog)method.getAnnotation(SysLog.class);
+        String className;
+        if (myLog != null) {
+            className = myLog.value();
+            systemLog.setOperation(className);
+        }
+
+        className = joinPoint.getTarget().getClass().getName();
+        String methodName = method.getName();
+        systemLog.setMethod(className + "." + methodName);
+        Object[] args = joinPoint.getArgs();
+        systemLog.setCreateDate(new Date());
+        systemLog.setUsername("");
+        systemLog.setIp(IpUtil.getRemoteAddr());
+        Gson gson = new Gson();
+        String param = gson.toJson(args);
+        systemLog.setParams(param);
+
+        systemLog.setResult(gson.toJson(object));
         systemLogRepository.save(systemLog);
     }
 }
