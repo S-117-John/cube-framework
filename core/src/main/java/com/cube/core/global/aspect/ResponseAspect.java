@@ -1,4 +1,4 @@
-package com.cube.core.system.aop;
+package com.cube.core.global.aspect;
 
 import com.cube.common.utils.IpUtil;
 import com.cube.core.global.model.ResponseVO;
@@ -6,45 +6,46 @@ import com.cube.core.system.annotation.SysLog;
 import com.cube.core.system.entity.SystemLogDO;
 import com.cube.core.system.repository.SystemLogRepository;
 import com.google.gson.Gson;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
 
 @Aspect
 @Component
-public class SysLogAspect {
+public class ResponseAspect {
 
     @Autowired
     private SystemLogRepository systemLogRepository;
 
-    @Autowired
-    private PlatformTransactionManager platformTransactionManager;
-    @Autowired
-    private TransactionDefinition transactionDefinition;
-
-
-    @Around(value = "@annotation(com.cube.core.system.annotation.SysLog)")
-//    @AfterReturning(value = "@annotation(com.cube.core.system.annotation.SysLog)",returning = "object")
-    public Object saveSysResult(ProceedingJoinPoint proceedingJoinPoint) {
-
+    @Around(value = "@annotation(com.cube.core.global.anno.ResponseApi)")
+    public ResponseVO handlerController(ProceedingJoinPoint proceedingJoinPoint){
+        ResponseVO response = new ResponseVO();
+        Gson gson = new Gson();
         SystemLogDO systemLog = new SystemLogDO();
+        try {
+            Object proceed = proceedingJoinPoint.proceed();
+            if (proceed instanceof ResponseVO) {
+                response = (ResponseVO) proceed;
+            } else {
+                response.setData(proceed);
+            }
+            systemLog.setResult(gson.toJson(proceed));
+        }
+        catch (Throwable throwable) {
+            response = handlerException(throwable);
+            systemLog.setResult(response.getMessage());
+        }
+
+        //记录系统操作日志
+
         MethodSignature signature = (MethodSignature)proceedingJoinPoint.getSignature();
         Method method = signature.getMethod();
         SysLog myLog = (SysLog)method.getAnnotation(SysLog.class);
@@ -61,18 +62,26 @@ public class SysLogAspect {
         systemLog.setCreateDate(new Date());
         systemLog.setUsername("");
         systemLog.setIp(IpUtil.getRemoteAddr());
-        Gson gson = new Gson();
         String param = gson.toJson(args);
         systemLog.setParams(param);
-        Object proceed = null;
-        try {
-            proceed = proceedingJoinPoint.proceed();
-            systemLog.setResult(gson.toJson(proceed));
-        } catch (Throwable throwable) {
-            systemLog.setResult(throwable.getMessage());
-        }
+
 
         systemLogRepository.save(systemLog);
-        return proceed;
+
+        return response;
     }
+
+    /**
+     * 异常处理
+     */
+    private ResponseVO handlerException(Throwable throwable) {
+        ResponseVO response = new ResponseVO();
+        String errorName = throwable.toString();
+        errorName = errorName.substring(errorName.lastIndexOf(".") + 1);
+        response.setCode("500");
+        response.setMessage(errorName);
+        return response;
+    }
+
+
 }

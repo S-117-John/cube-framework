@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <footer th:fragment="trans_record">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>时间</th>
+                            <th>卡号</th>
+                            <th>自助机流水号</th>
+                            <th>银行流水</th>
+                            <th>交易金额</th>
+                            <th>交易状态码</th>
+                            <th>交易状态信息</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="vo,voState : ${transList}">
+                            <td  th:text="${voState.index+1}"></td>
+                            <td  th:text="${vo.creatDate}"></td>
+                            <td  th:text="${vo.cardNo}"></td>
+                            <td  th:text="${vo.merTradeNo}"></td>
+                            <td  th:text="${vo.tradeNo}"></td>
+                            <td  th:text="${vo.txnAmt}"></td>
+                            <td  th:text="${vo.respCode}"></td>
+                            <td  th:text="${vo.respMsg}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </footer>
+</head>
+</html>
