@@ -1,0 +1,86 @@
+spring:
+  thymeleaf:
+    enabled: true  #开启thymeleaf视图解析
+    encoding: utf-8  #编码
+    prefix: classpath:/templates/  #前缀
+    cache: false  #是否使用缓存
+    mode: HTML  #严格的HTML语法模式
+    suffix: .html  #后缀名
+  profiles:
+    active: common,core,security
+  application:
+    name: kiosk
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/kiosk?serverTimezone=UTC
+    username: root
+    password: 123456
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+  security:
+    user:
+      name: admin
+      password: 123456
+server:
+  port: 8089
+logging:
+  file:
+    path: ./logs
+
+
+neofaith:
+  url: http://14.116.207.43:8062/services/
+  token: 48616468f12748e3a26e1af4e793ec4b
+  hosId: f27fc323ba174cb9b4d1c6e062a4ae34
+
+
+Hardware:
+  scoketPort: 8899
+  ip1: 127.0.0.1
+  ip2: 127.0.0.1
+  ip3: 127.0.0.1
+
+
+
+app-pay:
+  mid: 1234567
+  url: https://tcc.taobao.com/cc/json/mobile_tel_segment.htm
+  sharedSecret: mKowPRl2M8YoR6BP
+  rsaEncId:
+  noticeUrl: http://127.0.0.1:8080/api/pay/notice
+
+
+knife4j:
+  markdowns: classpath:markdown/*
+  enable: true
+  documents:
+      group: 1.2.x
+      name: 测试自定义标题分组
+      locations: classpath:md/*
+  setting:
+    enableSwaggerModels: true
+    enableDocumentManage: true
+    enableHost: false
+    enableHostText: http://localhost:999
+    enableRequestCache: true
+    enableFilterMultipartApis: false
+    enableFilterMultipartApiMethodType: POST
+    language: zh-CN
+  cors: false
+  production: false
+  basic:
+    enable: false
+    username: test
+    password: 123
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: shutdown
