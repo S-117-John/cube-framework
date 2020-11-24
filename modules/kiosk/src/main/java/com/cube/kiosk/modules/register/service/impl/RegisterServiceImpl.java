@@ -9,6 +9,7 @@ import com.cube.kiosk.modules.register.service.RegisterService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -21,6 +22,12 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Value("${neofaith.token}")
+    private String token;
+
+    @Value("${neofaith.hosId}")
+    private String hosId;
+
 
     @Override
     public void register(RegisterParam param){
@@ -52,11 +59,14 @@ public class RegisterServiceImpl implements RegisterService {
         paramMap.put("nation","");
         paramMap.put("password","");
         paramMap.put("operatorid","");
-        String result = restTemplate.doPostHisApi(paramMap,"his/cardIssuers");
+        paramMap.put("token", token);
+        paramMap.put("hosId", hosId);
+        Gson gson = new Gson();
+
+        String result = restTemplate.doPostNewHisApi(gson.toJson(paramMap),"his/cardIssuers");
         if(StringUtils.isEmpty(result)){
             throw new RuntimeException("未取得HIS系统返回信息，请联系管理员");
         }
-        Gson gson = new Gson();
         ResponseHisData<String> responseHisData = gson.fromJson(result,ResponseHisData.class);
         if(responseHisData.getCode()==1){
             throw new RuntimeException(String.format("HIS系统执行失败，获取HIS返回信息:%s",responseHisData.getResponseData()));

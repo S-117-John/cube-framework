@@ -29,6 +29,33 @@ public class RestTemplateAspect {
     @Autowired
     private TransactionRepository transactionRepository;
 
+
+    @AfterReturning(value = "execution(* com.cube.kiosk.modules.common.utils.RestTemplate.doPostNewHisApi(..))",returning = "object")
+    public void doNewAfter(JoinPoint joinPoint, Object object){
+        HisHttpsLog hisHttpsLog = new HisHttpsLog();
+        try {
+            Object[] objects = joinPoint.getArgs();
+            String param = "";
+            for (Object o : objects) {
+                if(o instanceof Map){
+                    param = o.toString();
+                }
+            }
+            hisHttpsLog.setCreateTime(new Date());
+            hisHttpsLog.setParam(param);
+            if(object!=null){
+                hisHttpsLog.setResult(object.toString());
+            }else {
+                hisHttpsLog.setNote("返回值为空");
+            }
+            hisHttpsLogRepository.save(hisHttpsLog);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
     @AfterReturning(value = "execution(* com.cube.kiosk.modules.common.utils.RestTemplate.doPostHisApi(..))",returning = "object")
     public void doAfter(JoinPoint joinPoint, Object object){
         HisHttpsLog hisHttpsLog = new HisHttpsLog();

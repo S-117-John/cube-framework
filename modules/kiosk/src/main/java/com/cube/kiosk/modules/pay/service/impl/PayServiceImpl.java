@@ -49,6 +49,12 @@ public class PayServiceImpl implements PayService {
     @Autowired
     private HardWareRepository hardWareRepository;
 
+    @Value("${neofaith.token}")
+    private String token;
+
+    @Value("${neofaith.hosId}")
+    private String hosId;
+
     @Autowired
     private TransactionRepository transactionRepository;
 
@@ -71,11 +77,7 @@ public class PayServiceImpl implements PayService {
     private PatientRepository patientRepository;
 
 
-    @Value("${neofaith.token}")
-    private String token;
 
-    @Value("${neofaith.hosId}")
-    private String hosId;
 
     public void doPost(PayParam payParam, ResultListener linstener) {
         String charset = "utf-8";

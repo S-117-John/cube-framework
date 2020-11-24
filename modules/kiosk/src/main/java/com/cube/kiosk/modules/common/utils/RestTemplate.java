@@ -38,6 +38,36 @@ public class RestTemplate extends org.springframework.web.client.RestTemplate {
     @Value("${app-pay.sharedSecret}")
     private String sharedSecret;
 
+    public String doPostNewHisApi(String param,String method) {
+
+        org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate(new HttpsClientRequestFactory());
+        List<HttpMessageConverter<?>> converterList = getMessageConverters();
+        converterList.remove(1);    //移除StringHttpMessageConverter
+        HttpMessageConverter<?> converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
+        converterList.add(1, converter);    //convert顺序错误会导致失败
+        setMessageConverters(converterList);
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("application/x-www-form-urlencoded; charset=UTF-8");
+        headers.setContentType(type);
+        headers.add("Accept", MediaType.APPLICATION_JSON.toString());
+
+        MultiValueMap<String, Object> postParameters = new LinkedMultiValueMap<>();
+        postParameters.put("requestJson", Collections.singletonList(param));
+
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<MultiValueMap<String, Object>>(postParameters, headers);
+        StringBuffer paramUrl = new StringBuffer(hisUrl+method);
+        URI uri = URI.create(paramUrl.toString());
+        ResponseEntity<String> responseEntity = exchange(uri, HttpMethod.POST,httpEntity,String.class);
+        return responseEntity.getBody();
+
+
+
+
+
+//        String httpOrgCreateTestRtn = sslClient.doPost(this.hisUrl+method, b, charset);
+//        return httpOrgCreateTestRtn;
+    }
+
     public String doPostHisApi(Map<String,Object> result,String method) {
         String charset = "utf-8";
         String token = this.token;
