@@ -36,6 +36,7 @@ public class ResponseAspect {
                 response = (ResponseVO) proceed;
             } else {
                 response.setData(proceed);
+                response.setCode("200");
             }
             systemLog.setResult(gson.toJson(proceed));
         }

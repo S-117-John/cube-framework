@@ -1,5 +1,6 @@
 package com.cube.kiosk.modules.pay.controller;
 
+import com.cube.core.global.anno.ResponseApi;
 import com.cube.core.system.annotation.SysLog;
 import com.cube.kiosk.modules.anno.Access;
 import com.cube.kiosk.modules.common.ResponseData;
@@ -72,39 +73,13 @@ public class PayController {
 
     @ApiOperation(httpMethod = "POST",value = "消费订单查询")
     @RequestMapping("query")
-    @SysLog("消费订单查询")
-    public ResponseData<TransactionData>  queryResult(@RequestBody String qrCodeUrl){
-        final Object[] objects = new Object[1];
+    @ResponseApi
+    public Object  queryResult(@RequestBody String qrCodeUrl){
+
+//        return  "HELLO";
         Gson gson = new Gson();
-        payService.queryResult(qrCodeUrl, new ResultListener() {
-            @Override
-            public void success(Object object) {
-                ResponseData<TransactionData> responseData = new ResponseData<>();
-                responseData.setCode("200");
-                responseData.setMessage("SUCCESS");
-                responseData.setData((TransactionData) object);
-                objects[0] = responseData;
-            }
-
-            @Override
-            public void error(Object object) {
-                ResponseData<TransactionData> responseData = new ResponseData<>();
-                responseData.setCode("500");
-                responseData.setMessage("ERROR");
-                responseData.setData((TransactionData) object);
-                objects[0] = responseData;
-            }
-
-            @Override
-            public void exception(Object object) {
-                ResponseData<TransactionData> responseData = new ResponseData<>();
-                responseData.setCode("500");
-                responseData.setMessage((String) object);
-                responseData.setData(new TransactionData());
-                objects[0] = responseData;
-            }
-        });
-        return (ResponseData<TransactionData>) objects[0];
+        TransactionData transactionData = payService.queryResult(qrCodeUrl);
+        return transactionData;
     }
 
     @ApiOperation(httpMethod = "POST",value = "主扫交易通知")

@@ -131,7 +131,7 @@ public class PayServiceImpl implements PayService {
             }
             TransactionData transactionData = new TransactionData();
 
-            transactionData.setPosNo(payParam.getPosNo());
+
             transactionData.setTranType("F");
             transactionData.setTxnAmt(payParam.getTxnAmt());
             transactionData.setTraceNo(payParam.getTraceNo());
@@ -166,11 +166,13 @@ public class PayServiceImpl implements PayService {
     }
 
     @Override
-    public void queryResult(String qrCodeUrl, ResultListener linstener) {
+    public TransactionData queryResult(String qrCodeUrl) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
+        TransactionData transactionData = new TransactionData();
+        TransactionData transactionResultData = new TransactionData();
         try {
             Gson gson = new Gson();
-            TransactionData transactionData = transactionRepository.findByScanCode(qrCodeUrl);
+            transactionData = transactionRepository.findByScanCode(qrCodeUrl);
             TransactionData queryTrans = new TransactionData();
             BeanUtils.copyProperties(transactionData,queryTrans);
             queryTrans.setTranType("G");
@@ -193,26 +195,18 @@ public class PayServiceImpl implements PayService {
 
             Future<String> future = executorService.submit(task);
             String result = future.get(10, TimeUnit.SECONDS);
-            TransactionData transactionResultData = gson.fromJson(result,TransactionData.class);
-//            QueryResult queryResult = new QueryResult();
-//            BeanUtils.copyProperties(transactionResultData,queryResult);
-//            queryResultRepository.save(queryResult);
+            transactionResultData = gson.fromJson(result,TransactionData.class);
             if("00".equals(transactionResultData.getRespCode())){
-                linstener.success(transactionResultData);
+                return transactionResultData;
             }else {
-                linstener.error(transactionResultData);
+                throw new RuntimeException("查询交易结果失败");
             }
 
         } catch (Exception e) {
-//            QueryResult queryResult = queryResultRepository.getOne("4028e5a075cf2a0a0175cf2a6d590003");
-//            TransactionData transactionResultData = new TransactionData();
-//            BeanUtils.copyProperties(queryResult,transactionResultData);
-//            linstener.success(transactionResultData);
-            linstener.exception(e.getMessage());
+            throw  new RuntimeException(e);
         }finally {
             executorService.shutdown();
         }
-
     }
 
     @Override

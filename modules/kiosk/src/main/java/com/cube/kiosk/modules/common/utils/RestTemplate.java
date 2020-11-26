@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 @Component
-public class RestTemplate extends org.springframework.web.client.RestTemplate {
+public class RestTemplate{
 
     @Value("${neofaith.token}")
     private String token;
@@ -40,12 +40,12 @@ public class RestTemplate extends org.springframework.web.client.RestTemplate {
 
     public String doPostNewHisApi(String param,String method) {
 
-        org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate(new HttpsClientRequestFactory());
-        List<HttpMessageConverter<?>> converterList = getMessageConverters();
+        org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+        List<HttpMessageConverter<?>> converterList = restTemplate.getMessageConverters();
         converterList.remove(1);    //移除StringHttpMessageConverter
         HttpMessageConverter<?> converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
         converterList.add(1, converter);    //convert顺序错误会导致失败
-        setMessageConverters(converterList);
+        restTemplate.setMessageConverters(converterList);
         HttpHeaders headers = new HttpHeaders();
         MediaType type = MediaType.parseMediaType("application/x-www-form-urlencoded; charset=UTF-8");
         headers.setContentType(type);
@@ -57,7 +57,7 @@ public class RestTemplate extends org.springframework.web.client.RestTemplate {
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<MultiValueMap<String, Object>>(postParameters, headers);
         StringBuffer paramUrl = new StringBuffer(hisUrl+method);
         URI uri = URI.create(paramUrl.toString());
-        ResponseEntity<String> responseEntity = exchange(uri, HttpMethod.POST,httpEntity,String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.POST,httpEntity,String.class);
         return responseEntity.getBody();
 
 
@@ -80,12 +80,12 @@ public class RestTemplate extends org.springframework.web.client.RestTemplate {
 //        requestJson.put("requestJson",jsonStr);
 //        String a = requestJson.toString();
 //        String b = a.substring(1,a.length()-1);
-        org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate(new HttpsClientRequestFactory());
-        List<HttpMessageConverter<?>> converterList = getMessageConverters();
+        org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+        List<HttpMessageConverter<?>> converterList = restTemplate.getMessageConverters();
         converterList.remove(1);    //移除StringHttpMessageConverter
         HttpMessageConverter<?> converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
         converterList.add(1, converter);    //convert顺序错误会导致失败
-        setMessageConverters(converterList);
+        restTemplate.setMessageConverters(converterList);
         HttpHeaders headers = new HttpHeaders();
         MediaType type = MediaType.parseMediaType("application/x-www-form-urlencoded; charset=UTF-8");
         headers.setContentType(type);
@@ -97,7 +97,7 @@ public class RestTemplate extends org.springframework.web.client.RestTemplate {
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<MultiValueMap<String, Object>>(postParameters, headers);
         StringBuffer paramUrl = new StringBuffer(hisUrl+method);
         URI uri = URI.create(paramUrl.toString());
-        ResponseEntity<String> responseEntity = exchange(uri, HttpMethod.POST,httpEntity,String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.POST,httpEntity,String.class);
         return responseEntity.getBody();
 
 
@@ -110,12 +110,13 @@ public class RestTemplate extends org.springframework.web.client.RestTemplate {
 
     public String doPostHisSaveApi(String param, String method) throws Exception {
 
-        org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate(new HttpsClientRequestFactory());
-        List<HttpMessageConverter<?>> converterList = getMessageConverters();
+//        org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate(new HttpsClientRequestFactory());
+        org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+        List<HttpMessageConverter<?>> converterList = restTemplate.getMessageConverters();
         converterList.remove(1);    //移除StringHttpMessageConverter
         HttpMessageConverter<?> converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
         converterList.add(1, converter);    //convert顺序错误会导致失败
-        setMessageConverters(converterList);
+        restTemplate.setMessageConverters(converterList);
         HttpHeaders headers = new HttpHeaders();
         MediaType type = MediaType.parseMediaType("application/x-www-form-urlencoded; charset=UTF-8");
         headers.setContentType(type);
@@ -127,7 +128,7 @@ public class RestTemplate extends org.springframework.web.client.RestTemplate {
         HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<MultiValueMap<String, Object>>(postParameters, headers);
         StringBuffer paramUrl = new StringBuffer(hisUrl+method);
         URI uri = URI.create(paramUrl.toString());
-        ResponseEntity<String> responseEntity = exchange(uri, HttpMethod.POST,httpEntity,String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.POST,httpEntity,String.class);
         return responseEntity.getBody();
 
 
@@ -137,11 +138,12 @@ public class RestTemplate extends org.springframework.web.client.RestTemplate {
     }
 
     public String doPostBankApi(String param,String method){
-        List<HttpMessageConverter<?>> converterList = getMessageConverters();
+        org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+        List<HttpMessageConverter<?>> converterList = restTemplate.getMessageConverters();
         converterList.remove(1);    //移除StringHttpMessageConverter
         HttpMessageConverter<?> converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
         converterList.add(1, converter);    //convert顺序错误会导致失败
-        setMessageConverters(converterList);
+        restTemplate.setMessageConverters(converterList);
         HttpHeaders headers = new HttpHeaders();
         MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
         headers.setContentType(type);
@@ -152,7 +154,7 @@ public class RestTemplate extends org.springframework.web.client.RestTemplate {
         HttpEntity<String> httpEntity = new HttpEntity<String>(httpBody, headers);
         StringBuffer paramUrl = new StringBuffer(url+method);
         URI uri = URI.create(paramUrl.toString());
-        ResponseEntity<String> responseEntity = exchange(uri, HttpMethod.POST,httpEntity,String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(uri, HttpMethod.POST,httpEntity,String.class);
         return responseEntity.getBody();
     }
 

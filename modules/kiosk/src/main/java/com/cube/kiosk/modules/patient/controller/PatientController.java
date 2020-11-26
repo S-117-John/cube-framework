@@ -1,6 +1,7 @@
 package com.cube.kiosk.modules.patient.controller;
 
 
+import com.cube.core.global.anno.ResponseApi;
 import com.cube.core.system.annotation.SysLog;
 import com.cube.kiosk.modules.anno.Access;
 import com.cube.kiosk.modules.common.model.ResultListener;
@@ -26,7 +27,6 @@ public class PatientController {
     @ApiOperation(httpMethod = "POST",value = "查询患者西悉尼")
     @RequestMapping("index")
     @SysLog("查询患者信息")
-    @Access
     public String index(@RequestBody String cardNo){
         final Object[] objects = new Object[1];
         patientService.get(cardNo, new ResultListener() {
@@ -48,5 +48,14 @@ public class PatientController {
         Gson gson = new Gson();
 
         return gson.toJson(objects[0]);
+    }
+
+
+    @ApiOperation(httpMethod = "POST",value = "撤销建卡")
+    @RequestMapping("delete")
+    @ResponseApi
+    public Object delete(@RequestBody String cardNo){
+        patientService.delete(cardNo);
+        return "SUCCESS";
     }
 }

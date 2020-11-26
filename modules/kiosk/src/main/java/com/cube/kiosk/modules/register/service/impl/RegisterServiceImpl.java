@@ -4,6 +4,8 @@ import com.cube.kiosk.modules.common.ResponseHisData;
 import com.cube.kiosk.modules.common.model.HisData;
 import com.cube.kiosk.modules.common.model.ResultListener;
 import com.cube.kiosk.modules.common.utils.RestTemplate;
+import com.cube.kiosk.modules.patient.model.Patient;
+import com.cube.kiosk.modules.patient.repository.PatientRepository;
 import com.cube.kiosk.modules.register.model.RegisterParam;
 import com.cube.kiosk.modules.register.service.RegisterService;
 import com.google.gson.Gson;
@@ -28,9 +30,11 @@ public class RegisterServiceImpl implements RegisterService {
     @Value("${neofaith.hosId}")
     private String hosId;
 
+    @Autowired
+    private PatientRepository patientRepository;
 
     @Override
-    public void register(RegisterParam param){
+    public RegisterParam register(RegisterParam param){
         Map<String,Object> paramMap = new HashMap<>(16);
         paramMap.put("cardTypeName","身份证");
         String cardNoParam = param.getCardNo().substring(0,32);
@@ -46,7 +50,7 @@ public class RegisterServiceImpl implements RegisterService {
         paramMap.put("identityName","身份证");
         paramMap.put("identitycard",param.getIdCard());
         paramMap.put("sex",param.getSex());
-        paramMap.put("birthday",param.getBirthday());
+        paramMap.put("birthday","1988-05-04");
         paramMap.put("homeplace","");
         paramMap.put("employment","");
         paramMap.put("registeredAddress",param.getAddress());
@@ -72,5 +76,13 @@ public class RegisterServiceImpl implements RegisterService {
             throw new RuntimeException(String.format("HIS系统执行失败，获取HIS返回信息:%s",responseHisData.getResponseData()));
         }
 
+        if(responseHisData.getCode()==0){
+            Patient patient = new Patient();
+            patient.setCardNo(a+b+c+d+e);
+            patient.setName(param.getName());
+            patientRepository.save(patient);
+        }
+        param.setCardNo(a+b+c+d+e);
+        return  param;
     }
 }

@@ -14,4 +14,6 @@ public interface PatientService {
      * @return
      */
     void get(String cardNo, ResultListener linstener);
+
+    void delete(String cardNo);
 }

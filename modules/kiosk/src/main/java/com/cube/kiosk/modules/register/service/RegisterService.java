@@ -5,5 +5,5 @@ import com.cube.kiosk.modules.register.model.RegisterParam;
 
 public interface RegisterService {
 
-    void register(RegisterParam param);
+    RegisterParam register(RegisterParam param);
 }

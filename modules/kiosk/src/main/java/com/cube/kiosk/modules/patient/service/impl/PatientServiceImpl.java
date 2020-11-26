@@ -13,6 +13,7 @@ import com.cube.kiosk.modules.patient.service.PatientService;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -30,6 +31,12 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     private PatientRepository patientRepository;
 
+
+    @Value("${neofaith.token}")
+    private String token;
+
+    @Value("${neofaith.hosId}")
+    private String hosId;
     /**
      * 获取病人信息
      *
@@ -96,6 +103,27 @@ public class PatientServiceImpl implements PatientService {
             responseData.setData(null);
             responseData.setMessage(exception.getMessage());
             linstener.exception(responseData);
+        }
+    }
+
+    @Override
+    public void delete(String cardNo) {
+
+        Gson gson = new Gson();
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("token",token);
+        map.put("hosId",hosId);
+        map.put("cardTypeName","身份证");
+        map.put("cardId",cardNo);
+
+        String param = gson.toJson(map);
+
+        String result = restTemplate.doPostNewHisApi(param,"his/revokeCard");
+
+        ResponseHisData<Object> responseHisData = gson.fromJson(result,ResponseHisData.class);
+        if(responseHisData.getCode()!=0){
+            throw new RuntimeException("撤销建卡失败");
         }
     }
 }

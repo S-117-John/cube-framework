@@ -25,8 +25,8 @@ public class RegisterController {
     @RequestMapping("")
     @ResponseApi
     public Object register(@RequestBody RegisterParam registerParam){
-        registerService.register(registerParam);
-        return "SUCCESS";
+        RegisterParam result =  registerService.register(registerParam);
+        return result;
     }
 
 }

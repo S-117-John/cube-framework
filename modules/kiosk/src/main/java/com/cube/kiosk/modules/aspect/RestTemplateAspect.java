@@ -35,14 +35,9 @@ public class RestTemplateAspect {
         HisHttpsLog hisHttpsLog = new HisHttpsLog();
         try {
             Object[] objects = joinPoint.getArgs();
-            String param = "";
-            for (Object o : objects) {
-                if(o instanceof Map){
-                    param = o.toString();
-                }
-            }
+            Gson gson = new Gson();
             hisHttpsLog.setCreateTime(new Date());
-            hisHttpsLog.setParam(param);
+            hisHttpsLog.setParam(gson.toJson(objects));
             if(object!=null){
                 hisHttpsLog.setResult(object.toString());
             }else {
@@ -110,15 +105,12 @@ public class RestTemplateAspect {
     public void doPostBankApi(JoinPoint joinPoint, Object object){
         TransLogDO transLogDO = new TransLogDO();
         try {
+            Gson gson = new Gson();
             Object[] objects = joinPoint.getArgs();
             String param = "";
-            for (Object o : objects) {
-                if(o instanceof String){
-                    param = o.toString();
-                }
-            }
+
             transLogDO.setCreateTime(new Date());
-            transLogDO.setParam(param);
+            transLogDO.setParam(gson.toJson(objects));
             if(object!=null){
                 transLogDO.setResult(object.toString());
             }else {
