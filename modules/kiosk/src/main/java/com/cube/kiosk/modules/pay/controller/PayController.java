@@ -4,12 +4,10 @@ import com.cube.core.global.anno.ResponseApi;
 import com.cube.core.system.annotation.SysLog;
 import com.cube.kiosk.modules.anno.Access;
 import com.cube.kiosk.modules.common.ResponseData;
+import com.cube.kiosk.modules.common.ResponseHisData;
 import com.cube.kiosk.modules.common.model.ResultListener;
 import com.cube.kiosk.modules.pay.anno.PayParamResolver;
-import com.cube.kiosk.modules.pay.model.Notice;
-import com.cube.kiosk.modules.pay.model.PayParam;
-import com.cube.kiosk.modules.pay.model.TransQueryParam;
-import com.cube.kiosk.modules.pay.model.TransactionData;
+import com.cube.kiosk.modules.pay.model.*;
 import com.cube.kiosk.modules.pay.repository.NoticeRepository;
 import com.cube.kiosk.modules.pay.service.PayService;
 import com.cube.kiosk.modules.register.anno.RegisterResolver;
@@ -17,11 +15,16 @@ import com.cube.kiosk.modules.register.model.RegisterParam;
 import com.google.gson.Gson;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/pay")
@@ -116,7 +119,7 @@ public class PayController {
     }
 
 
-    @ApiOperation(httpMethod = "POST",value = "充值")
+    @ApiIgnore
     @RequestMapping("hospitalized")
     @SysLog("住院预交金充值")
     public ResponseData<String> saveHospitalized(@RequestBody String tradNo){
@@ -138,5 +141,26 @@ public class PayController {
             }
         });
         return (ResponseData<String>) objects[0];
+    }
+
+
+    @ApiOperation(httpMethod = "POST",value = "住院充值")
+    @RequestMapping("saveHos")
+    @ResponseApi
+    public Object saveHos(@RequestBody String tradNo){
+     String result = payService.saveHos(tradNo);
+     Gson gson = new Gson();
+        ResponseHisData<Object> responseHisData = gson.fromJson(result,ResponseHisData.class);
+
+        if(responseHisData.getCode()==1||responseHisData.getCode()==2){
+            throw  new RuntimeException((String) responseHisData.getResponseData());
+        }
+        Map<String,Object> map = new HashMap<>();
+        map = (Map<String, Object>) responseHisData.getResponseData();
+        PayResultVO payResultVO = new PayResultVO();
+        payResultVO.setHisSerialNumber(MapUtils.getString(map,"hisSerialNumber"));
+        payResultVO.setHisPayDate(MapUtils.getString(map,"hisPayDate"));
+        payResultVO.setBalance(MapUtils.getString(map,"balance"));
+        return payResultVO;
     }
 }

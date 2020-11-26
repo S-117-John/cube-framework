@@ -16,4 +16,6 @@ public interface PatientService {
     void get(String cardNo, ResultListener linstener);
 
     void delete(String cardNo);
+
+    String queryHosPatient(String hosId);
 }

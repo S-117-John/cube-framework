@@ -126,4 +126,16 @@ public class PatientServiceImpl implements PatientService {
             throw new RuntimeException("撤销建卡失败");
         }
     }
+
+    @Override
+    public String queryHosPatient(String inId) {
+        Gson gson = new Gson();
+        Map<String,Object> map = new HashMap<>();
+        map.put("token",token);
+        map.put("hosId",hosId);
+        map.put("inHosid",inId);
+        String param = gson.toJson(map);
+        String result = restTemplate.doPostNewHisApi(param,"his/getPatientInfo");
+        return result;
+    }
 }

@@ -108,7 +108,7 @@ public class RestTemplate{
 //        return httpOrgCreateTestRtn;
     }
 
-    public String doPostHisSaveApi(String param, String method) throws Exception {
+    public String doPostHisSaveApi(String param, String method) {
 
 //        org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate(new HttpsClientRequestFactory());
         org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();

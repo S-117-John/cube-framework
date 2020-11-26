@@ -11,7 +11,9 @@ import com.cube.kiosk.modules.common.utils.HisMd5Sign;
 import com.cube.kiosk.modules.common.utils.HttpsRestTemplate;
 import com.cube.kiosk.modules.common.utils.RestTemplate;
 import com.cube.kiosk.modules.hardware.repository.HardWareRecordRepository;
+import com.cube.kiosk.modules.patient.model.HosPatientDO;
 import com.cube.kiosk.modules.patient.model.Patient;
+import com.cube.kiosk.modules.patient.repository.HosPatientRepository;
 import com.cube.kiosk.modules.patient.repository.PatientRepository;
 import com.cube.kiosk.modules.pay.model.PayParam;
 import com.cube.kiosk.modules.pay.model.QueryResult;
@@ -323,6 +325,44 @@ public class PayServiceImpl implements PayService {
             linstener.exception(responseData);
         }
 
+    }
+
+
+    @Autowired
+    private HosPatientRepository hosPatientRepository;
+
+    @Override
+    public String saveHos(String merTradeNo) {
+        TransactionData transactionData = transactionRepository.findByMerTradeNoAndTranType(merTradeNo,"F");
+        ResponseData<String> responseData = new ResponseData<>();
+        if(transactionData==null){
+           throw  new RuntimeException(String.format("根据商户订单号%s未查询到交易记录",merTradeNo));
+        }
+        Gson gson = new Gson();
+        String cardNo = transactionData.getCardNo();
+        String tradNo = transactionData.getTradeNo();
+        SortedMap<String, String> packageParams = new TreeMap<String, String>();
+        HosPatientDO patient = hosPatientRepository.getOne(cardNo);
+        packageParams.put("cardID", cardNo);
+        packageParams.put("money", "1");
+        packageParams.put("modeType", "1");
+        packageParams.put("operatorid", "0102");
+        packageParams.put("patientName", patient.getName());
+        packageParams.put("serialNumber", merTradeNo);
+        packageParams.put("inHosid", patient.getHosId());
+
+        packageParams.put("payType", "微信");
+        packageParams.put("token", token);
+        packageParams.put("hosId", hosId);
+        String sign = HisMd5Sign.createSign(packageParams, token);
+        packageParams.put("sign", sign);
+        String param = gson.toJson(packageParams);
+        String result = restTemplate.doPostHisSaveApi(param,"his/payMedicalCard");
+        if(StringUtils.isEmpty(result)){
+            throw new RuntimeException("HIS系统无返回值");
+        }
+
+       return result;
     }
 
     public static void main(String[] args) {
