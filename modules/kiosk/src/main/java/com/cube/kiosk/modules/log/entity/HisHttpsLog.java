@@ -25,4 +25,8 @@ public class HisHttpsLog {
     private String result;
 
     private String note;
+
+    private String ip;
+
+    private String oper;
 }

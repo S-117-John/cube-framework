@@ -1,5 +1,9 @@
 package com.cube.kiosk.modules.aspect;
 
+import com.cube.common.utils.IpUtil;
+import com.cube.core.global.model.ResponseVO;
+import com.cube.core.system.annotation.SysLog;
+import com.cube.core.system.entity.SystemLogDO;
 import com.cube.kiosk.modules.log.entity.HisHttpsLog;
 import com.cube.kiosk.modules.log.entity.TransLogDO;
 import com.cube.kiosk.modules.log.repository.HisHttpsLogRepository;
@@ -7,13 +11,19 @@ import com.cube.kiosk.modules.log.repository.TransLogRepository;
 import com.cube.kiosk.modules.pay.model.TransactionData;
 import com.cube.kiosk.modules.pay.repository.TransactionRepository;
 import com.google.gson.Gson;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -30,97 +40,75 @@ public class RestTemplateAspect {
     private TransactionRepository transactionRepository;
 
 
-    @AfterReturning(value = "execution(* com.cube.kiosk.modules.common.utils.RestTemplate.doPostNewHisApi(..))",returning = "object")
-    public void doNewAfter(JoinPoint joinPoint, Object object){
-        HisHttpsLog hisHttpsLog = new HisHttpsLog();
+
+    @Around(value = "@annotation(com.cube.kiosk.modules.anno.HisLog)")
+    public Object handlerController(ProceedingJoinPoint proceedingJoinPoint){
+       HisHttpsLog hisHttpsLog = new HisHttpsLog();
+       Gson gson = new Gson();
+        Object proceed = null;
         try {
-            Object[] objects = joinPoint.getArgs();
-            Gson gson = new Gson();
-            hisHttpsLog.setCreateTime(new Date());
-            hisHttpsLog.setParam(gson.toJson(objects));
-            if(object!=null){
-                hisHttpsLog.setResult(object.toString());
-            }else {
-                hisHttpsLog.setNote("返回值为空");
-            }
-            hisHttpsLogRepository.save(hisHttpsLog);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+            proceed = proceedingJoinPoint.proceed();
+            Object[] args = proceedingJoinPoint.getArgs();
+            for (int i = 0; i < args.length; i++) {
+                if(i==0){
+                    String param = StringEscapeUtils.unescapeJava((String) args[i]);
+                    hisHttpsLog.setParam(param);
+                }
 
-    }
-
-
-    @AfterReturning(value = "execution(* com.cube.kiosk.modules.common.utils.RestTemplate.doPostHisApi(..))",returning = "object")
-    public void doAfter(JoinPoint joinPoint, Object object){
-        HisHttpsLog hisHttpsLog = new HisHttpsLog();
-        try {
-            Object[] objects = joinPoint.getArgs();
-            String param = "";
-            for (Object o : objects) {
-                if(o instanceof Map){
-                    param = o.toString();
+                if(i==1){
+                    String method = StringEscapeUtils.unescapeJava((String) args[i]);
+                    hisHttpsLog.setNote(method);
                 }
             }
             hisHttpsLog.setCreateTime(new Date());
-            hisHttpsLog.setParam(param);
-            if(object!=null){
-                hisHttpsLog.setResult(object.toString());
-            }else {
-                hisHttpsLog.setNote("返回值为空");
-            }
-            hisHttpsLogRepository.save(hisHttpsLog);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+            String result = StringEscapeUtils.unescapeJava((String) proceed);
+            hisHttpsLog.setResult(result);
+            String ip = IpUtil.getRemoteAddr();
+            hisHttpsLog.setIp(ip);
 
+
+        }
+        catch (Throwable throwable) {
+
+            hisHttpsLog.setResult(throwable.getMessage());
+        }
+        hisHttpsLogRepository.save(hisHttpsLog);
+
+       return proceed;
     }
 
-    @AfterReturning(value = "execution(* com.cube.kiosk.modules.common.utils.RestTemplate.doPostHisSaveApi(..))",returning = "object")
-    public void doAfterSave(JoinPoint joinPoint, Object object){
-        HisHttpsLog hisHttpsLog = new HisHttpsLog();
+
+    @Around(value = "@annotation(com.cube.kiosk.modules.anno.BankLog)")
+    public Object bankLog(ProceedingJoinPoint proceedingJoinPoint){
+        TransLogDO bankLog = new TransLogDO();
+        Object proceed = null;
         try {
-            Object[] objects = joinPoint.getArgs();
-            String param = "";
-            for (Object o : objects) {
-                if(o instanceof Map){
-                    param = o.toString();
+            proceed = proceedingJoinPoint.proceed();
+            Object[] args = proceedingJoinPoint.getArgs();
+            for (int i = 0; i < args.length; i++) {
+                if(i==0){
+                    String param = StringEscapeUtils.unescapeJava((String) args[i]);
+                    bankLog.setParam(param);
                 }
-            }
-            hisHttpsLog.setCreateTime(new Date());
-            hisHttpsLog.setParam(param);
-            if(object!=null){
-                hisHttpsLog.setResult(object.toString());
-            }else {
-                hisHttpsLog.setNote("返回值为空");
-            }
-            hisHttpsLogRepository.save(hisHttpsLog);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
 
+            }
+            bankLog.setCreateTime(new Date());
+            String result = StringEscapeUtils.unescapeJava((String) proceed);
+            bankLog.setResult(result);
+            String ip = IpUtil.getRemoteAddr();
+            bankLog.setIp(ip);
+
+
+        }
+        catch (Throwable throwable) {
+
+            bankLog.setResult(throwable.getMessage());
+        }
+        transLogRepository.save(bankLog);
+
+        return proceed;
     }
 
-    @AfterReturning(value = "execution(* com.cube.kiosk.modules.common.utils.RestTemplate.doPostBankApi(..))",returning = "object")
-    public void doPostBankApi(JoinPoint joinPoint, Object object){
-        TransLogDO transLogDO = new TransLogDO();
-        try {
-            Gson gson = new Gson();
-            Object[] objects = joinPoint.getArgs();
-            String param = "";
 
-            transLogDO.setCreateTime(new Date());
-            transLogDO.setParam(gson.toJson(objects));
-            if(object!=null){
-                transLogDO.setResult(object.toString());
-            }else {
-                transLogDO.setResult("返回值为空");
-            }
-            transLogRepository.save(transLogDO);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
 
 }

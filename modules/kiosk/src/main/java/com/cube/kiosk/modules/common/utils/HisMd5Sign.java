@@ -38,15 +38,15 @@ public class HisMd5Sign {
 
     public static void main(String[] args) {
         SortedMap<String, String> packageParams = new TreeMap<String, String>();
-        packageParams.put("cardID", "acc4459248406263646566676869");
+        packageParams.put("inHosid", "0002010138");
         packageParams.put("hosId", "f27fc323ba174cb9b4d1c6e062a4ae34");
-        packageParams.put("money", "0.01");
-        packageParams.put("modeType", "1");
+        packageParams.put("money", "1");
         packageParams.put("operatorid", "0102");
-        packageParams.put("patientName", "李智峰");
-        packageParams.put("serialNumber", "19261400000006512011161421576322");
+        packageParams.put("patientName", "史振杰");
+        packageParams.put("payDate", "2020-11-27 13:07:15");
+        packageParams.put("payType", "微信");
+        packageParams.put("serialNumber", "781833218792882176");
         packageParams.put("token", "48616468f12748e3a26e1af4e793ec4b");
-
         String sign = HisMd5Sign.createSign(packageParams, "48616468f12748e3a26e1af4e793ec4b");
         System.out.println(sign);
     }

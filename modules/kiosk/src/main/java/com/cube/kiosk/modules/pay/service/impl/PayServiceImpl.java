@@ -39,6 +39,7 @@ import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -80,6 +81,7 @@ public class PayServiceImpl implements PayService {
 
 
 
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public void doPost(PayParam payParam, ResultListener linstener) {
         String charset = "utf-8";
@@ -151,6 +153,7 @@ public class PayServiceImpl implements PayService {
             transactionData.setCardNo(payParam.getCardNo());
             //交易成功回调
             transactionData.setCallBackUrl(callBack);
+            transactionData.setCreatDate(new Date());
             transactionRepository.save(transactionData);
             if("00".equals(transactionData.getRespCode())){
                 linstener.success(transactionData);
@@ -343,21 +346,41 @@ public class PayServiceImpl implements PayService {
         String tradNo = transactionData.getTradeNo();
         SortedMap<String, String> packageParams = new TreeMap<String, String>();
         HosPatientDO patient = hosPatientRepository.getOne(cardNo);
-        packageParams.put("cardID", cardNo);
-        packageParams.put("money", "1");
-        packageParams.put("modeType", "1");
-        packageParams.put("operatorid", "0102");
-        packageParams.put("patientName", patient.getName());
-        packageParams.put("serialNumber", merTradeNo);
-        packageParams.put("inHosid", patient.getHosId());
-
-        packageParams.put("payType", "微信");
         packageParams.put("token", token);
         packageParams.put("hosId", hosId);
+        packageParams.put("inHosid", patient.getHosId());
+        packageParams.put("patientName", patient.getName());
+//        packageParams.put("IDentityCard", patient.getIdCard());
+        //手机号码
+//        packageParams.put("telephone", "13123456789");
+        //性别
+//        packageParams.put("patientSex", "");
+        //年龄
+//        packageParams.put("patientAge", "");
+        packageParams.put("payType", "微信");
+        packageParams.put("money", "1");
+        packageParams.put("serialNumber", merTradeNo);
+        //医院充值账户
+//        packageParams.put("hosAccount", "");
+        //支付凭证
+//        packageParams.put("payVoucher", "");
+//支付时间
+        packageParams.put("payDate", simpleDateFormat.format(new Date()));
+        packageParams.put("operatorid", "0102");
+
+
+
+
+
+
+
+
+
+
         String sign = HisMd5Sign.createSign(packageParams, token);
         packageParams.put("sign", sign);
         String param = gson.toJson(packageParams);
-        String result = restTemplate.doPostHisSaveApi(param,"his/payMedicalCard");
+        String result = restTemplate.doPostHisSaveApi(param,"his/paymenPrepaid");
         if(StringUtils.isEmpty(result)){
             throw new RuntimeException("HIS系统无返回值");
         }

@@ -109,13 +109,19 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public void delete(String cardNo) {
 
+        String cardNoParam = cardNo.substring(0,32);
+        String a = cardNoParam.substring(0,6);
+        String b = cardNoParam.substring(7,10);
+        String c = cardNoParam.substring(11,12);
+        String d = cardNoParam.substring(13,14);
+        String e = cardNoParam.substring(15,cardNoParam.length());
         Gson gson = new Gson();
 
         Map<String,Object> map = new HashMap<>();
         map.put("token",token);
         map.put("hosId",hosId);
         map.put("cardTypeName","身份证");
-        map.put("cardId",cardNo);
+        map.put("cardId",a+b+c+d+e);
 
         String param = gson.toJson(map);
 

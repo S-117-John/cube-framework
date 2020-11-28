@@ -95,7 +95,7 @@ public class PatientController {
         hosPatientDO.setName(MapUtils.getString(map,"patientname"));
         hosPatientDO.setAge(MapUtils.getString(map,"age"));
         hosPatientDO.setSex(MapUtils.getString(map,"sex"));
-//        hosPatientDO.setIdCard(MapUtils.getString(map,"sex"));
+        hosPatientDO.setIdCard(MapUtils.getString(map,"postalCode"));
         hosPatientRepository.save(hosPatientDO);
         return hosPatientDO;
     }

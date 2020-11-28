@@ -1,6 +1,8 @@
 package com.cube.kiosk.modules.common.utils;
 
 import com.cube.common.https.SSLClient;
+import com.cube.kiosk.modules.anno.BankLog;
+import com.cube.kiosk.modules.anno.HisLog;
 import com.cube.kiosk.modules.common.config.HttpsClientRequestFactory;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,7 @@ public class RestTemplate{
     @Value("${app-pay.sharedSecret}")
     private String sharedSecret;
 
+    @HisLog
     public String doPostNewHisApi(String param,String method) {
 
         org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
@@ -137,6 +140,7 @@ public class RestTemplate{
 
     }
 
+    @BankLog
     public String doPostBankApi(String param,String method){
         org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
         List<HttpMessageConverter<?>> converterList = restTemplate.getMessageConverters();

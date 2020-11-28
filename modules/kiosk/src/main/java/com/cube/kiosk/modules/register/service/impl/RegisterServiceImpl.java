@@ -55,7 +55,7 @@ public class RegisterServiceImpl implements RegisterService {
         paramMap.put("employment","");
         paramMap.put("registeredAddress",param.getAddress());
         paramMap.put("postalCode","");
-        paramMap.put("telephone","");
+        paramMap.put("telephone",param.getPhone());
         paramMap.put("workUnit","");
         paramMap.put("unitTelephone","");
         paramMap.put("unitPostCode","");
@@ -66,8 +66,8 @@ public class RegisterServiceImpl implements RegisterService {
         paramMap.put("token", token);
         paramMap.put("hosId", hosId);
         Gson gson = new Gson();
-
-        String result = restTemplate.doPostNewHisApi(gson.toJson(paramMap),"his/cardIssuers");
+        String hsiparam  = gson.toJson(paramMap);
+        String result = restTemplate.doPostNewHisApi(hsiparam,"his/cardIssuers");
         if(StringUtils.isEmpty(result)){
             throw new RuntimeException("未取得HIS系统返回信息，请联系管理员");
         }
