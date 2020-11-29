@@ -67,11 +67,6 @@ public class PayServiceImpl implements PayService {
     @Value("${app-pay.noticeUrl}")
     private String callBack;
 
-    @Autowired
-    private HttpsRestTemplate httpsRestTemplate;
-
-    @Autowired
-    private QueryResultRepository queryResultRepository;
 
     @Autowired
     private RestTemplate restTemplate;

@@ -16,4 +16,6 @@ public interface PayService {
     void saveHospitalized(String tradeNo,ResultListener linstener);
 
     String saveHos(String tradNo);
+
+
 }

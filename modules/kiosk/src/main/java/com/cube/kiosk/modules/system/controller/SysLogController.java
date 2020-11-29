@@ -24,6 +24,7 @@ public class SysLogController {
     static {
         operMap.put("com.cube.kiosk.modules.register.controller.RegisterController.register","门诊办卡");
         operMap.put("com.cube.kiosk.modules.patient.controller.PatientController.delete","撤销办卡");
+        operMap.put("com.cube.kiosk.modules.pay.controller.PayController.cashSave","现金充值");
     }
 
     @RequestMapping("")

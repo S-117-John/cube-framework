@@ -1,11 +1,16 @@
 package com.cube.kiosk.modules.pay.controller;
 
+import com.cube.common.utils.SnowflakeIdWorker;
 import com.cube.core.global.anno.ResponseApi;
 import com.cube.core.system.annotation.SysLog;
 import com.cube.kiosk.modules.anno.Access;
 import com.cube.kiosk.modules.common.ResponseData;
 import com.cube.kiosk.modules.common.ResponseHisData;
 import com.cube.kiosk.modules.common.model.ResultListener;
+import com.cube.kiosk.modules.common.utils.HisMd5Sign;
+import com.cube.kiosk.modules.common.utils.RestTemplate;
+import com.cube.kiosk.modules.patient.model.Patient;
+import com.cube.kiosk.modules.patient.repository.PatientRepository;
 import com.cube.kiosk.modules.pay.anno.PayParamResolver;
 import com.cube.kiosk.modules.pay.model.*;
 import com.cube.kiosk.modules.pay.repository.NoticeRepository;
@@ -17,19 +22,26 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/pay")
 @Api(value = "支付",tags = "支付")
 public class PayController {
+
+    @Value("${neofaith.token}")
+    private String token;
+
+    @Value("${neofaith.hosId}")
+    private String hosId;
+
 
     @Autowired
     private PayService payService;
@@ -118,6 +130,46 @@ public class PayController {
         return (ResponseData<String>) objects[0];
     }
 
+    @Autowired
+    private PatientRepository patientRepository;
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @ApiOperation(httpMethod = "POST",value = "现金充值")
+    @RequestMapping("cashSave")
+    @ResponseApi
+    public Object cashSave(@RequestBody CashDTO cashDTO){
+        Gson gson = new Gson();
+        SortedMap<String, String> packageParams = new TreeMap<String, String>();
+        Optional<Patient> optional = patientRepository.findById(cashDTO.getCardNo());
+        if(!optional.isPresent()){
+            throw new RuntimeException("未获取到患者信息");
+        }
+        Patient patient = optional.get();
+        packageParams.put("cardID", cashDTO.getCardNo());
+        packageParams.put("money", cashDTO.getMoney());
+        packageParams.put("modeType", "现金");
+        packageParams.put("operatorid", "0102");
+        packageParams.put("patientName", patient.getName());
+        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
+        long id = idWorker.nextId();
+        packageParams.put("serialNumber", id+"");
+        packageParams.put("token", token);
+        packageParams.put("hosId", hosId);
+        String sign = HisMd5Sign.createSign(packageParams, token);
+        packageParams.put("sign", sign);
+        String param = gson.toJson(packageParams);
+        String result = restTemplate.doPostNewHisApi(param,"his/payMedicalCard");
+        ResponseHisData<Object> responseHisData = gson.fromJson(result,ResponseHisData.class);
+        if(responseHisData.getCode()!=0){
+            throw new RuntimeException((String) responseHisData.getResponseData());
+        }
+        Map<String,Object> hisResult = new HashMap<>(16);
+        CashVO cashVO = new CashVO();
+        cashVO.setHisSerialNumber(MapUtils.getString(hisResult,"hisSerialNumber"));
+        cashVO.setBalance(MapUtils.getString(hisResult,"balance"));
+        return cashVO;
+    }
 
     @ApiIgnore
     @RequestMapping("hospitalized")
