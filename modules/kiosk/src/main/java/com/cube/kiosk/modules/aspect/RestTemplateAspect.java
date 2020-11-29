@@ -11,7 +11,8 @@ import com.cube.kiosk.modules.log.repository.TransLogRepository;
 import com.cube.kiosk.modules.pay.model.TransactionData;
 import com.cube.kiosk.modules.pay.repository.TransactionRepository;
 import com.google.gson.Gson;
-import org.apache.commons.lang3.StringEscapeUtils;
+
+import org.apache.commons.text.StringEscapeUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;

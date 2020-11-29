@@ -66,8 +66,8 @@ public class PatientController {
     @RequestMapping("delete")
     @ResponseApi
     public Object delete(@RequestBody String cardNo){
-        patientService.delete(cardNo);
-        return "SUCCESS";
+        String result = patientService.delete(cardNo);
+        return result;
     }
 
     @ApiOperation(httpMethod = "POST",value = "查询住院患者信息")

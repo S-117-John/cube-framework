@@ -107,7 +107,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void delete(String cardNo) {
+    public String delete(String cardNo) {
 
         String cardNoParam = cardNo.substring(0,32);
         String a = cardNoParam.substring(0,6);
@@ -131,6 +131,7 @@ public class PatientServiceImpl implements PatientService {
         if(responseHisData.getCode()!=0){
             throw new RuntimeException("撤销建卡失败");
         }
+        return result;
     }
 
     @Override

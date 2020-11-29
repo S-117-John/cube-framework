@@ -154,6 +154,7 @@ public class PayServiceImpl implements PayService {
             //交易成功回调
             transactionData.setCallBackUrl(callBack);
             transactionData.setCreatDate(new Date());
+            transactionData.setIp(IpUtil.getRemoteAddr());
             transactionRepository.save(transactionData);
             if("00".equals(transactionData.getRespCode())){
                 linstener.success(transactionData);

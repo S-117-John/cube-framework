@@ -23,6 +23,7 @@ public class SysLogController {
     private static Map<String,Object> operMap = new HashMap<>();
     static {
         operMap.put("com.cube.kiosk.modules.register.controller.RegisterController.register","门诊办卡");
+        operMap.put("com.cube.kiosk.modules.patient.controller.PatientController.delete","撤销办卡");
     }
 
     @RequestMapping("")

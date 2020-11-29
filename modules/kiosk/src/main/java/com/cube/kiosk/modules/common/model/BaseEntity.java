@@ -10,4 +10,6 @@ import java.util.Date;
 public class BaseEntity {
 
     private Date creatDate;
+
+    private String ip;
 }

@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.net.NoRouteToHostException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +39,24 @@ public class RegisterServiceImpl implements RegisterService {
     @Override
     public RegisterParam register(RegisterParam param){
         Map<String,Object> paramMap = new HashMap<>(16);
+        String str = param.getBirthday();   //
+        String string = "2020-02-01";  //yyyy-MM-dd
+        try {
+            //   yyyyMMdd转yyyy-MM-dd
+            Date format1 = null;
+            format1 = new SimpleDateFormat("yyyyMMdd").parse(str);
+            String longDate = new SimpleDateFormat("yyyy-MM-dd").format(format1);
+            if(StringUtils.isEmpty(longDate)){
+                paramMap.put("birthday",new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+            }else{
+                paramMap.put("birthday",longDate);
+            }
+
+        } catch (ParseException e) {
+            throw new RuntimeException("出生日期转换异常");
+        }
+
+
         paramMap.put("cardTypeName","身份证");
         String cardNoParam = param.getCardNo().substring(0,32);
         String a = cardNoParam.substring(0,6);
@@ -50,7 +71,7 @@ public class RegisterServiceImpl implements RegisterService {
         paramMap.put("identityName","身份证");
         paramMap.put("identitycard",param.getIdCard());
         paramMap.put("sex",param.getSex());
-        paramMap.put("birthday","1988-05-04");
+
         paramMap.put("homeplace","");
         paramMap.put("employment","");
         paramMap.put("registeredAddress",param.getAddress());

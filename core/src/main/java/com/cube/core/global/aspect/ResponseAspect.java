@@ -6,6 +6,7 @@ import com.cube.core.system.annotation.SysLog;
 import com.cube.core.system.entity.SystemLogDO;
 import com.cube.core.system.repository.SystemLogRepository;
 import com.google.gson.Gson;
+import org.apache.commons.text.StringEscapeUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -38,7 +39,7 @@ public class ResponseAspect {
                 response.setData(proceed);
                 response.setCode("200");
             }
-            systemLog.setResult(gson.toJson(proceed));
+            systemLog.setResult(StringEscapeUtils.unescapeJava(gson.toJson(proceed)));
         }
         catch (Throwable throwable) {
             response = handlerException(throwable);
@@ -49,14 +50,9 @@ public class ResponseAspect {
 
         MethodSignature signature = (MethodSignature)proceedingJoinPoint.getSignature();
         Method method = signature.getMethod();
-        SysLog myLog = (SysLog)method.getAnnotation(SysLog.class);
-        String className;
-        if (myLog != null) {
-            className = myLog.value();
-            systemLog.setOperation(className);
-        }
 
-        className = proceedingJoinPoint.getTarget().getClass().getName();
+
+        String className = proceedingJoinPoint.getTarget().getClass().getName();
         String methodName = method.getName();
         systemLog.setMethod(className + "." + methodName);
         Object[] args = proceedingJoinPoint.getArgs();

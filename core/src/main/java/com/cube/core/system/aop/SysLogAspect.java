@@ -6,6 +6,7 @@ import com.cube.core.system.annotation.SysLog;
 import com.cube.core.system.entity.SystemLogDO;
 import com.cube.core.system.repository.SystemLogRepository;
 import com.google.gson.Gson;
+import org.apache.commons.text.StringEscapeUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
