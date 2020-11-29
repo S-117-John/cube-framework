@@ -12,6 +12,7 @@ import com.cube.kiosk.modules.patient.service.PatientService;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -87,10 +88,14 @@ public class PatientServiceImpl implements PatientService {
                 //查询余额
                 paramMap.put("patientname",patient.getName());
                 paramMap.put("identitycard",patient.getCardNo());
-                result = restTemplate.doPostHisApi(paramMap,"his/getBalance");
+                paramMap.put("token", token);
+                paramMap.put("hosId", hosId);
+                String json = gson.toJson(paramMap);
+                result = restTemplate.doPostNewHisApi(json,"his/getBalance");
                 responseHisData = gson.fromJson(result,ResponseHisData.class);
                 if(responseHisData.getCode()==0){
-
+                    Map<String,Object> map = (Map<String, Object>) responseHisData.getResponseData();
+                    patient.setBalance(MapUtils.getString(map,"balance"));
                 }
                 responseData.setCode("200");
                 responseData.setData(patient);

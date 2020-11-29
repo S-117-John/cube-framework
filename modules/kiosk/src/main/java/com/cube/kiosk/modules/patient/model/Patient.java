@@ -27,7 +27,7 @@ public class Patient {
     /**
      * 卡余额
      */
-    private Double balance;
+    private String balance;
 
     /**
      * 总充值金额

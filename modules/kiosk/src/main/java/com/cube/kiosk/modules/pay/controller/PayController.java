@@ -148,7 +148,7 @@ public class PayController {
         Patient patient = optional.get();
         packageParams.put("cardID", cashDTO.getCardNo());
         packageParams.put("money", cashDTO.getMoney());
-        packageParams.put("modeType", "现金");
+        packageParams.put("modeType", "4");
         packageParams.put("operatorid", "0102");
         packageParams.put("patientName", patient.getName());
         SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
@@ -164,7 +164,7 @@ public class PayController {
         if(responseHisData.getCode()!=0){
             throw new RuntimeException((String) responseHisData.getResponseData());
         }
-        Map<String,Object> hisResult = new HashMap<>(16);
+        Map<String,Object> hisResult = (Map<String, Object>) responseHisData.getResponseData();
         CashVO cashVO = new CashVO();
         cashVO.setHisSerialNumber(MapUtils.getString(hisResult,"hisSerialNumber"));
         cashVO.setBalance(MapUtils.getString(hisResult,"balance"));

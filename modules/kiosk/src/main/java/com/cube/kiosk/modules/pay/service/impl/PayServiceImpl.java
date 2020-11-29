@@ -132,7 +132,8 @@ public class PayServiceImpl implements PayService {
 
 
             transactionData.setTranType("F");
-            transactionData.setTxnAmt(payParam.getTxnAmt());
+            Integer integer = Integer.parseInt(payParam.getTxnAmt());
+            transactionData.setTxnAmt((integer*100)+"");
             transactionData.setTraceNo(payParam.getTraceNo());
             SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
             long id = idWorker.nextId();
@@ -186,7 +187,9 @@ public class PayServiceImpl implements PayService {
                     while (true){
                         result = restTemplate.doPostBankApi(transParam,"");
                         TransactionData transactionData = gson.fromJson(result,TransactionData.class);
+
                         if("00".equals(transactionData.getRespCode())){
+
                             return result;
                         }
                     }
@@ -198,6 +201,9 @@ public class PayServiceImpl implements PayService {
             String result = future.get(10, TimeUnit.SECONDS);
             transactionResultData = gson.fromJson(result,TransactionData.class);
             if("00".equals(transactionResultData.getRespCode())){
+                TransactionData transresult = transactionRepository.findByScanCode(qrCodeUrl);
+                transresult.setPayType(transactionResultData.getPayType());
+                transactionRepository.save(transresult);
                 return transactionResultData;
             }else {
                 throw new RuntimeException("查询交易结果失败");
@@ -227,7 +233,20 @@ public class PayServiceImpl implements PayService {
         SortedMap<String, String> packageParams = new TreeMap<String, String>();
         Patient patient = patientRepository.getOne(cardNo);
         packageParams.put("cardID", cardNo);
-        packageParams.put("money", "1");
+
+        String money = transactionData.getTxnAmt();
+
+        Integer integer = Integer.parseInt(money);
+
+        packageParams.put("money", (integer/100)+"");
+        if("ZFBA".equalsIgnoreCase(transactionData.getPayType())){
+            packageParams.put("modeType", "2");
+        }else if("WEIX".equalsIgnoreCase(transactionData.getPayType())){
+            packageParams.put("modeType", "1");
+
+        }else {
+            packageParams.put("modeType", "1");
+        }
         packageParams.put("modeType", "1");
         packageParams.put("operatorid", "0102");
         packageParams.put("patientName", patient.getName());
