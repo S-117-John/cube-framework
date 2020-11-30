@@ -47,11 +47,11 @@ Hardware:
 
 
 app-pay:
-  mid: 1234567
-  url: https://tcc.taobao.com/cc/json/mobile_tel_segment.htm
-  sharedSecret: mKowPRl2M8YoR6BP
+  mid: 103610580626129
+  url: http://192.168.1.101:8080/comlink-interface-abc-forward_v1.1_2019_11_22_10_22_14/comlink/pay
+  sharedSecret: Ke377y3ruJogSNx58GBz31DQ8zWbOpi8
   rsaEncId:
-  noticeUrl: http://127.0.0.1:8080/api/pay/notice
+  noticeUrl: http://192.168.23.30:8080/api/pay/notice
 
 
 knife4j:
