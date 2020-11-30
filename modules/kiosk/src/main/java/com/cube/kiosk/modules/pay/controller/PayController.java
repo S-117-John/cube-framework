@@ -9,7 +9,9 @@ import com.cube.kiosk.modules.common.ResponseHisData;
 import com.cube.kiosk.modules.common.model.ResultListener;
 import com.cube.kiosk.modules.common.utils.HisMd5Sign;
 import com.cube.kiosk.modules.common.utils.RestTemplate;
+import com.cube.kiosk.modules.patient.model.HosPatientDO;
 import com.cube.kiosk.modules.patient.model.Patient;
+import com.cube.kiosk.modules.patient.repository.HosPatientRepository;
 import com.cube.kiosk.modules.patient.repository.PatientRepository;
 import com.cube.kiosk.modules.pay.anno.PayParamResolver;
 import com.cube.kiosk.modules.pay.model.*;
@@ -23,12 +25,14 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -42,6 +46,8 @@ public class PayController {
     @Value("${neofaith.hosId}")
     private String hosId;
 
+
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     private PayService payService;
@@ -214,5 +220,123 @@ public class PayController {
         payResultVO.setHisPayDate(MapUtils.getString(map,"hisPayDate"));
         payResultVO.setBalance(MapUtils.getString(map,"balance"));
         return payResultVO;
+    }
+
+    @Autowired
+    private HosPatientRepository hosPatientRepository;
+
+    @ApiOperation(httpMethod = "POST",value = "现金住院充值")
+    @RequestMapping("cashSaveHos")
+    @ResponseApi
+    public Object cashSaveHos(@RequestBody CashDTO cashDTO){
+        Gson gson = new Gson();
+        SortedMap<String, String> packageParams = new TreeMap<String, String>();
+        HosPatientDO patient = hosPatientRepository.getOne(cashDTO.getCardNo());
+        packageParams.put("token", token);
+        packageParams.put("hosId", hosId);
+        packageParams.put("inHosid", patient.getHosId());
+        packageParams.put("patientName", patient.getName());
+        packageParams.put("payType", "现金");
+        packageParams.put("money", "4");
+        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
+        long id = idWorker.nextId();
+        packageParams.put("serialNumber", id+"");
+
+        packageParams.put("payDate", simpleDateFormat.format(new Date()));
+        packageParams.put("operatorid", "0102");
+        String sign = HisMd5Sign.createSign(packageParams, token);
+        packageParams.put("sign", sign);
+        String param = gson.toJson(packageParams);
+        String result = restTemplate.doPostHisSaveApi(param,"his/paymenPrepaid");
+        if(StringUtils.isEmpty(result)){
+            throw new RuntimeException("HIS系统无返回值");
+        }
+        ResponseHisData<Object> responseHisData = gson.fromJson(result,ResponseHisData.class);
+
+        if(responseHisData.getCode()==1||responseHisData.getCode()==2){
+            throw  new RuntimeException((String) responseHisData.getResponseData());
+        }
+        Map<String,Object> map = new HashMap<>();
+        map = (Map<String, Object>) responseHisData.getResponseData();
+        PayResultVO payResultVO = new PayResultVO();
+        payResultVO.setHisSerialNumber(MapUtils.getString(map,"hisSerialNumber"));
+        payResultVO.setHisPayDate(MapUtils.getString(map,"hisPayDate"));
+        payResultVO.setBalance(MapUtils.getString(map,"balance"));
+        return payResultVO;
+    }
+
+
+    @ApiOperation(httpMethod = "POST",value = "银行卡充值")
+    @RequestMapping("bankSave")
+    @ResponseApi
+    public Object bankSave(@RequestBody BankDTO bankDTO){
+        Gson gson = new Gson();
+        SortedMap<String, String> packageParams = new TreeMap<String, String>();
+        Optional<Patient> optional = patientRepository.findById(bankDTO.getCardNo());
+        if(!optional.isPresent()){
+            throw new RuntimeException("未获取到患者信息");
+        }
+        Patient patient = optional.get();
+        packageParams.put("cardID", bankDTO.getCardNo());
+        packageParams.put("money", bankDTO.getSaveMoney());
+        packageParams.put("modeType", "3");
+        packageParams.put("operatorid", "0102");
+        packageParams.put("patientName", patient.getName());
+        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
+        long id = idWorker.nextId();
+        packageParams.put("serialNumber", id+"");
+        packageParams.put("token", token);
+        packageParams.put("hosId", hosId);
+        String sign = HisMd5Sign.createSign(packageParams, token);
+        packageParams.put("sign", sign);
+        String param = gson.toJson(packageParams);
+        String result = restTemplate.doPostNewHisApi(param,"his/payMedicalCard");
+        ResponseHisData<Object> responseHisData = gson.fromJson(result,ResponseHisData.class);
+        if(responseHisData.getCode()!=0){
+            throw new RuntimeException((String) responseHisData.getResponseData());
+        }
+        Map<String,Object> hisResult = (Map<String, Object>) responseHisData.getResponseData();
+        BankVO bankVO = new BankVO();
+        bankVO.setHisSerialNumber(MapUtils.getString(hisResult,"hisSerialNumber"));
+        bankVO.setBalance(MapUtils.getString(hisResult,"balance"));
+        return bankVO;
+    }
+
+
+
+    @ApiOperation(httpMethod = "POST",value = "银行卡充值")
+    @RequestMapping("bankSaveHos")
+    @ResponseApi
+    public Object bankSaveHos(@RequestBody BankDTO bankDTO){
+        Gson gson = new Gson();
+        SortedMap<String, String> packageParams = new TreeMap<String, String>();
+        Optional<HosPatientDO> optional = hosPatientRepository.findById(bankDTO.getCardNo());
+        if(!optional.isPresent()){
+            throw new RuntimeException("未获取到患者信息");
+        }
+        HosPatientDO patient = optional.get();
+        packageParams.put("cardID", bankDTO.getCardNo());
+        packageParams.put("money", bankDTO.getSaveMoney());
+        packageParams.put("modeType", "3");
+        packageParams.put("operatorid", "0102");
+        packageParams.put("patientName", patient.getName());
+        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
+        long id = idWorker.nextId();
+        packageParams.put("serialNumber", id+"");
+        packageParams.put("token", token);
+        packageParams.put("hosId", hosId);
+        String sign = HisMd5Sign.createSign(packageParams, token);
+        packageParams.put("sign", sign);
+        String param = gson.toJson(packageParams);
+        String result = restTemplate.doPostNewHisApi(param,"his/paymenPrepaid");
+        ResponseHisData<Object> responseHisData = gson.fromJson(result,ResponseHisData.class);
+        if(responseHisData.getCode()!=0){
+            throw new RuntimeException((String) responseHisData.getResponseData());
+        }
+        Map<String,Object> hisResult = (Map<String, Object>) responseHisData.getResponseData();
+        BankVO bankVO = new BankVO();
+        bankVO.setHisSerialNumber(MapUtils.getString(hisResult,"hisSerialNumber"));
+        bankVO.setBalance(MapUtils.getString(hisResult,"balance"));
+        return bankVO;
     }
 }

@@ -140,7 +140,7 @@ public class RestTemplate{
 
     }
 
-    @BankLog
+//    @BankLog
     public String doPostBankApi(String param,String method){
         org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
         List<HttpMessageConverter<?>> converterList = restTemplate.getMessageConverters();

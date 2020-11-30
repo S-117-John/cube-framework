@@ -14,7 +14,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/kiosk?serverTimezone=UTC
     username: root
-    password: 123456
+    password: admin123
   jpa:
     show-sql: true
     hibernate:
