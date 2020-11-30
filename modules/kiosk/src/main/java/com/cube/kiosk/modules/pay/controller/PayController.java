@@ -237,7 +237,7 @@ public class PayController {
         packageParams.put("inHosid", patient.getHosId());
         packageParams.put("patientName", patient.getName());
         packageParams.put("payType", "现金");
-        packageParams.put("money", "4");
+        packageParams.put("money", cashDTO.getMoney());
         SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
         long id = idWorker.nextId();
         packageParams.put("serialNumber", id+"");
@@ -304,7 +304,7 @@ public class PayController {
 
 
 
-    @ApiOperation(httpMethod = "POST",value = "银行卡充值")
+    @ApiOperation(httpMethod = "POST",value = "住院银行卡充值")
     @RequestMapping("bankSaveHos")
     @ResponseApi
     public Object bankSaveHos(@RequestBody BankDTO bankDTO){
@@ -315,18 +315,23 @@ public class PayController {
             throw new RuntimeException("未获取到患者信息");
         }
         HosPatientDO patient = optional.get();
-        packageParams.put("cardID", bankDTO.getCardNo());
-        packageParams.put("money", bankDTO.getSaveMoney());
-        packageParams.put("modeType", "3");
-        packageParams.put("operatorid", "0102");
+
+        packageParams.put("token", token);
+        packageParams.put("hosId", hosId);
+        packageParams.put("inHosid", patient.getHosId());
         packageParams.put("patientName", patient.getName());
+        packageParams.put("payType", "银联");
+        packageParams.put("money", bankDTO.getSaveMoney());
         SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
         long id = idWorker.nextId();
         packageParams.put("serialNumber", id+"");
-        packageParams.put("token", token);
-        packageParams.put("hosId", hosId);
+
+        packageParams.put("payDate", simpleDateFormat.format(new Date()));
+        packageParams.put("operatorid", "0102");
         String sign = HisMd5Sign.createSign(packageParams, token);
         packageParams.put("sign", sign);
+
+
         String param = gson.toJson(packageParams);
         String result = restTemplate.doPostNewHisApi(param,"his/paymenPrepaid");
         ResponseHisData<Object> responseHisData = gson.fromJson(result,ResponseHisData.class);
