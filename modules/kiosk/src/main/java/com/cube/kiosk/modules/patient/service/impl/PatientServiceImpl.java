@@ -60,10 +60,12 @@ public class PatientServiceImpl implements PatientService {
 
         try{
             Map<String,Object> paramMap = new HashMap<>(16);
-
-            paramMap.put("cardId",cardNo);
-            String result = restTemplate.doPostHisApi(paramMap,"his/getPatientInfo");
             Gson gson = new Gson();
+            paramMap.put("cardId",cardNo);
+            paramMap.put("token", token);
+            paramMap.put("hosId", hosId);
+            String json = gson.toJson(paramMap);
+            String result = restTemplate.doPostNewHisApi(json,"his/getPatientnameInfo");
             ResponseHisData<Object> responseHisData = gson.fromJson(result,ResponseHisData.class);
             if(responseHisData.getCode()==1){
                 responseData.setCode("500");
@@ -90,7 +92,7 @@ public class PatientServiceImpl implements PatientService {
                 paramMap.put("identitycard",patient.getCardNo());
                 paramMap.put("token", token);
                 paramMap.put("hosId", hosId);
-                String json = gson.toJson(paramMap);
+                json = gson.toJson(paramMap);
                 result = restTemplate.doPostNewHisApi(json,"his/getBalance");
                 responseHisData = gson.fromJson(result,ResponseHisData.class);
                 if(responseHisData.getCode()==0){
