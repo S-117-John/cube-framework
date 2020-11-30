@@ -62,7 +62,7 @@ public class PatientServiceImpl implements PatientService {
             Map<String,Object> paramMap = new HashMap<>(16);
 
             paramMap.put("cardId",cardNo);
-            String result = restTemplate.doPostHisApi(paramMap,"his/getPatientnameInfo");
+            String result = restTemplate.doPostHisApi(paramMap,"his/getPatientInfo");
             Gson gson = new Gson();
             ResponseHisData<Object> responseHisData = gson.fromJson(result,ResponseHisData.class);
             if(responseHisData.getCode()==1){
