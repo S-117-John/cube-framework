@@ -1,5 +1,6 @@
 package com.cube.kiosk.modules.pay.controller;
 
+import com.cube.common.utils.IpUtil;
 import com.cube.common.utils.SnowflakeIdWorker;
 import com.cube.core.global.anno.ResponseApi;
 import com.cube.core.system.annotation.SysLog;
@@ -16,10 +17,14 @@ import com.cube.kiosk.modules.patient.repository.PatientRepository;
 import com.cube.kiosk.modules.pay.anno.PayParamResolver;
 import com.cube.kiosk.modules.pay.model.*;
 import com.cube.kiosk.modules.pay.repository.NoticeRepository;
+import com.cube.kiosk.modules.pay.repository.TransactionRepository;
 import com.cube.kiosk.modules.pay.service.PayService;
 import com.cube.kiosk.modules.register.anno.RegisterResolver;
 import com.cube.kiosk.modules.register.model.RegisterParam;
+import com.cube.kiosk.modules.security.model.HardWareConfigDO;
+import com.cube.kiosk.modules.security.repository.HardWareRepository;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.MapUtils;
@@ -32,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -56,7 +62,7 @@ public class PayController {
     private NoticeRepository noticeRepository;
 
     @ApiOperation(httpMethod = "POST",value = "获取支付二维码")
-    @RequestMapping("index")
+    @RequestMapping("")
     @SysLog("获取支付二维码")
     public ResponseData<TransactionData> index(@RequestBody PayParam payParam){
         final Object[] objects = new Object[1];
@@ -91,6 +97,65 @@ public class PayController {
         return (ResponseData<TransactionData>) objects[0];
     }
 
+    @Autowired
+    private HardWareRepository hardWareRepository;
+
+    @Value("${app-pay.mid}")
+    private String mid;
+
+    @Value("${app-pay.noticeUrl}")
+    private String callBack;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @ApiOperation(httpMethod = "POST",value = "获取支付二维码")
+    @RequestMapping("index")
+    public Object getQrCode(@RequestBody PayParam payParam){
+        HardWareConfigDO hardWareConfigDO = hardWareRepository.findByIp(IpUtil.getRemoteAddr());
+        if(hardWareConfigDO !=null){
+            payParam.setPosNo(hardWareConfigDO.getPosNo());
+            payParam.setTid(hardWareConfigDO.getTid());
+            payParam.setTxnAmt(payParam.getMoney());
+            NumberFormat nf = NumberFormat.getInstance();
+            //设置是否使用分组
+            nf.setGroupingUsed(false);
+            //设置最大整数位数
+            nf.setMaximumIntegerDigits(6);
+            //设置最小整数位数
+            nf.setMinimumIntegerDigits(6);
+            payParam.setTraceNo(nf.format(hardWareConfigDO.getTraceNo()));
+
+            hardWareConfigDO.setTraceNo(hardWareConfigDO.getTraceNo()+1);
+            hardWareRepository.save(hardWareConfigDO);
+        }
+        TransactionData transactionData = new TransactionData();
+        transactionData.setTranType("F");
+        Integer integer = Integer.parseInt(payParam.getTxnAmt());
+        transactionData.setTxnAmt((integer*100)+"");
+        transactionData.setTraceNo(payParam.getTraceNo());
+        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
+        long id = idWorker.nextId();
+        transactionData.setMerTradeNo(id+"");
+        transactionData.setMid(mid);
+        transactionData.setTid(payParam.getTid());
+        Gson gson = new Gson();
+        String transParam = gson.toJson(transactionData);
+
+
+        String result = restTemplate.doPostBankApi(transParam,"");
+        transactionData = gson.fromJson(result,TransactionData.class);
+        transactionData.setCardNo(payParam.getCardNo());
+        //交易成功回调
+        transactionData.setCallBackUrl(callBack);
+        transactionData.setCreatDate(new Date());
+        transactionData.setIp(IpUtil.getRemoteAddr());
+        transactionRepository.save(transactionData);
+        if(!"00".equals(transactionData.getRespCode())){
+            throw new RuntimeException(gson.toJson(transactionData));
+        }
+        return transactionData;
+    }
 
     @ApiOperation(httpMethod = "POST",value = "消费订单查询")
     @RequestMapping("query")
