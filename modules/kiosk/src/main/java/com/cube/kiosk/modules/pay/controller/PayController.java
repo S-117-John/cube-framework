@@ -111,6 +111,7 @@ public class PayController {
 
     @ApiOperation(httpMethod = "POST",value = "获取支付二维码")
     @RequestMapping("index")
+    @ResponseApi
     public Object getQrCode(@RequestBody PayParam payParam){
         HardWareConfigDO hardWareConfigDO = hardWareRepository.findByIp(IpUtil.getRemoteAddr());
         if(hardWareConfigDO !=null){
