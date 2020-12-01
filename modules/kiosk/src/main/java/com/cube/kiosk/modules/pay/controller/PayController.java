@@ -161,8 +161,6 @@ public class PayController {
     @RequestMapping("query")
     @ResponseApi
     public Object  queryResult(@RequestBody String qrCodeUrl){
-
-//        return  "HELLO";
         Gson gson = new Gson();
         TransactionData transactionData = payService.queryResult(qrCodeUrl);
         return transactionData;
