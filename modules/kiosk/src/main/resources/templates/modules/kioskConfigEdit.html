@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <footer th:fragment="kiosk_config_edit">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">编辑</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form th:object="${config}" role="form" th:action="@{/admin/kiosk/config/save}">
+                            <input th:field="*{id}"  type="text" name="id" hidden>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>名称</label>
+                                    <input th:field="*{name}"  type="text" name="name" class="form-control" >
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">设备编号</label>
+                                    <input th:field="*{posNo}" type="text" name="posNo" class="form-control" id="exampleInputPassword1">
+                                </div>
+                                <div class="form-group">
+                                    <label >终端号</label>
+                                    <input th:field="*{tid}" type="text" name="tid" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label >终端流水号</label>
+                                    <input th:field="*{traceNo}" type="text" name="traceNo" class="form-control"  placeholder="初始写1">
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">保存</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+    </footer>
+</head>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <footer th:fragment="kiosk_config">
+        <div class="container-fluid">
+            <a th:href="@{/admin/kiosk/config/form}" class="btn btn-primary">新增</a>
+            <div class="row">
+                <div class="col-md-12">
+
+                    <table class="table table-bordered" >
+                        <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th style="width: 50px">IP</th>
+                            <th style="width: 100px">名称</th>
+                            <th style="width: 100px">自助机编号</th>
+                            <th style="width: 200px">终端号</th>
+                            <th style="width: 200px">终端流水号</th>
+                            <th>编辑</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="vo,voState : ${configList}">
+                            <td  th:text="${voState.index+1}"></td>
+                            <td  th:text="${vo.ip}"></td>
+                            <td  th:text="${vo.name}"></td>
+                            <td  th:text="${vo.posNo}"></td>
+                            <td  th:text="${vo.tid}"></td>
+                            <td th:text="${vo.traceNo}"></td>
+                            <td><span class="badge bg-danger"><a th:href="@{'/admin/kiosk/config/edit?id='+${vo.id}}">编辑</a></span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+
+
+    </footer>
+</head>
+</html>
