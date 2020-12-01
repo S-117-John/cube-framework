@@ -61,6 +61,7 @@ public class PayController {
     @Autowired
     private NoticeRepository noticeRepository;
 
+    @ApiIgnore
     @ApiOperation(httpMethod = "POST",value = "获取支付二维码")
     @RequestMapping("")
     @SysLog("获取支付二维码")
