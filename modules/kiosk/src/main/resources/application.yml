@@ -34,8 +34,8 @@ logging:
 
 neofaith:
   url: http://14.116.207.43:8062/services/
-  token: 48616468f12748e3a26e1af4e793ec4b
-  hosId: f27fc323ba174cb9b4d1c6e062a4ae34
+  token: e469e6e7ca4340c6a711e3108dadf201
+  hosId: 9f2f168040e6435691d6b9529ca85e3e
 
 
 Hardware:
