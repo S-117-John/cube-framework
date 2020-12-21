@@ -12,7 +12,7 @@ spring:
     name: kiosk
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://rm-bp14gc16vp52x4ehkno.mysql.rds.aliyuncs.com:3306/kiosk?serverTimezone=UTC
+    url: jdbc:mysql://rm-bp14gc16vp52x4ehkno.mysql.rds.aliyuncs.com:3306/kiosk
     username: kiosk
     password: Kiosk123456
   jpa:
@@ -33,7 +33,7 @@ logging:
 
 
 neofaith:
-  url: http://14.116.207.43:8062/services/
+  url: http://39.97.168.90:8062/services/
   token: e469e6e7ca4340c6a711e3108dadf201
   hosId: 9f2f168040e6435691d6b9529ca85e3e
 
