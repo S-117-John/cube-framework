@@ -12,9 +12,9 @@ spring:
     name: kiosk
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/kiosk?serverTimezone=UTC
-    username: root
-    password: admin123
+    url: jdbc:mysql://rm-bp14gc16vp52x4ehkno.mysql.rds.aliyuncs.com:3306/kiosk?serverTimezone=UTC
+    username: kiosk
+    password: Kiosk123456
   jpa:
     show-sql: true
     hibernate:
