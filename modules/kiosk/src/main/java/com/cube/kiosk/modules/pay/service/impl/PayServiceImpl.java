@@ -239,15 +239,15 @@ public class PayServiceImpl implements PayService {
         Integer integer = Integer.parseInt(money);
 
         packageParams.put("money", (integer/100)+"");
-        if("ZFBA".equalsIgnoreCase(transactionData.getPayType())){
+        if("ZFBA".equals(transactionData.getPayType())){
             packageParams.put("modeType", "2");
-        }else if("WEIX".equalsIgnoreCase(transactionData.getPayType())){
+        }else if("WEIX".equals(transactionData.getPayType())){
             packageParams.put("modeType", "1");
 
         }else {
             packageParams.put("modeType", "1");
         }
-        packageParams.put("modeType", "1");
+
         packageParams.put("operatorid", "0102");
         packageParams.put("patientName", patient.getName());
         packageParams.put("serialNumber", merTradeNo);
