@@ -310,7 +310,12 @@ public class PayServiceImpl implements PayService {
         String tradNo = transactionData.getTradeNo();
         Map<String,Object> paramMap = new HashMap<>();
         paramMap.put("cardID",cardNo);
-        paramMap.put("money","1");
+
+        String money = transactionData.getTxnAmt();
+
+        Integer integer = Integer.parseInt(money);
+
+        paramMap.put("money",(integer/100)+"");
         paramMap.put("modeType","3");
         paramMap.put("serialNumber",tradNo);
 
@@ -373,7 +378,13 @@ public class PayServiceImpl implements PayService {
         //年龄
 //        packageParams.put("patientAge", "");
         packageParams.put("payType", "微信");
-        packageParams.put("money", "1");
+
+        String money = transactionData.getTxnAmt();
+
+        Integer integer = Integer.parseInt(money);
+
+        packageParams.put("money",(integer/100)+"");
+
         packageParams.put("serialNumber", merTradeNo);
         //医院充值账户
 //        packageParams.put("hosAccount", "");
