@@ -248,7 +248,7 @@ public class PayServiceImpl implements PayService {
             packageParams.put("modeType", "1");
         }
 
-        packageParams.put("operatorid", "0102");
+        packageParams.put("operatorid", "8888");
         packageParams.put("patientName", patient.getName());
         packageParams.put("serialNumber", merTradeNo);
         packageParams.put("token", token);
@@ -392,7 +392,7 @@ public class PayServiceImpl implements PayService {
 //        packageParams.put("payVoucher", "");
 //支付时间
         packageParams.put("payDate", simpleDateFormat.format(new Date()));
-        packageParams.put("operatorid", "0102");
+        packageParams.put("operatorid", "8888");
 
 
 
