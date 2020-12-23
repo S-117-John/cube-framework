@@ -248,7 +248,7 @@ public class PayServiceImpl implements PayService {
             packageParams.put("modeType", "1");
         }
 
-        packageParams.put("operatorid", "8888");
+        packageParams.put("operatorid", "6666");
         packageParams.put("patientName", patient.getName());
         packageParams.put("serialNumber", merTradeNo);
         packageParams.put("token", token);
