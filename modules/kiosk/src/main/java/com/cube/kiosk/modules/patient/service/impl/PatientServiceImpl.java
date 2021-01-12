@@ -58,9 +58,9 @@ public class PatientServiceImpl implements PatientService {
             cardNo = a+b+c+d+e;
         }
 
-        if(cardNo.indexOf("0")==0){
-            cardNo = cardNo.substring(1);
-        }
+//        if(cardNo.indexOf("0")==0){
+//            cardNo = cardNo.substring(1);
+//        }
 
         try{
             Map<String,Object> paramMap = new HashMap<>(16);
