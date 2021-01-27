@@ -127,12 +127,15 @@ public class PatientServiceImpl implements PatientService {
         String d = cardNoParam.substring(13,14);
         String e = cardNoParam.substring(15,cardNoParam.length());
         Gson gson = new Gson();
-
+        String caNo = a+b+c+d+e;
+        if(caNo.indexOf("0")==0){
+            caNo = caNo.substring(1);
+        }
         Map<String,Object> map = new HashMap<>();
         map.put("token",token);
         map.put("hosId",hosId);
         map.put("cardTypeName","身份证");
-        map.put("cardId",a+b+c+d+e);
+        map.put("cardId",caNo);
 
         String param = gson.toJson(map);
 
