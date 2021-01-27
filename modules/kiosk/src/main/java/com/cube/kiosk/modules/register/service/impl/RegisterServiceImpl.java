@@ -64,7 +64,12 @@ public class RegisterServiceImpl implements RegisterService {
         String c = cardNoParam.substring(11,12);
         String d = cardNoParam.substring(13,14);
         String e = cardNoParam.substring(15,cardNoParam.length());
-        paramMap.put("cardId",a+b+c+d+e);
+        String cardNo = a+b+c+d+e;
+
+        if(cardNo.indexOf("0")==0){
+            cardNo = cardNo.substring(1);
+        }
+        paramMap.put("cardId",cardNo);
         paramMap.put("patienttype","1");
         paramMap.put("patientname",param.getName());
         paramMap.put("guarname","");
