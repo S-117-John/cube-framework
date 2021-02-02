@@ -128,9 +128,9 @@ public class PatientServiceImpl implements PatientService {
         String e = cardNoParam.substring(15,cardNoParam.length());
         Gson gson = new Gson();
         String caNo = a+b+c+d+e;
-//        if(caNo.indexOf("0")==0){
-//            caNo = caNo.substring(1);
-//        }
+        if(caNo.indexOf("0")==0){
+            caNo = caNo.substring(1);
+        }
         Map<String,Object> map = new HashMap<>();
         map.put("token",token);
         map.put("hosId",hosId);
