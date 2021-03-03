@@ -232,9 +232,9 @@ public class PayServiceImpl implements PayService {
         String tradNo = transactionData.getTradeNo();
         SortedMap<String, String> packageParams = new TreeMap<String, String>();
         Patient patient = patientRepository.getOne(cardNo);
-        if(cardNo.indexOf("0")==0){
-            cardNo = cardNo.substring(1);
-        }
+//        if(cardNo.indexOf("0")==0){
+//            cardNo = cardNo.substring(1);
+//        }
         packageParams.put("cardID", cardNo);
 
         String money = transactionData.getTxnAmt();
