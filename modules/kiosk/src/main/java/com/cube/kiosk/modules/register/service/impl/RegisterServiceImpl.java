@@ -58,14 +58,15 @@ public class RegisterServiceImpl implements RegisterService {
 
 
         paramMap.put("cardTypeName","身份证");
-        String cardNoParam = param.getCardNo().substring(0,32);
-        String a = cardNoParam.substring(0,6);
-        String b = cardNoParam.substring(7,10);
-        String c = cardNoParam.substring(11,12);
-        String d = cardNoParam.substring(13,14);
-        String e = cardNoParam.substring(15,cardNoParam.length());
-        String cardNo = a+b+c+d+e;
-//
+//        String cardNoParam = param.getCardNo().substring(0,32);
+        String cardNoParam = param.getCardNo();
+//        String a = cardNoParam.substring(0,6);
+//        String b = cardNoParam.substring(7,10);
+//        String c = cardNoParam.substring(11,12);
+//        String d = cardNoParam.substring(13,14);
+//        String e = cardNoParam.substring(15,cardNoParam.length());
+//        String cardNo = a+b+c+d+e;
+        String cardNo = cardNoParam;
 //        if(cardNo.indexOf("0")==0){
 //            cardNo = cardNo.substring(1);
 //        }
@@ -104,11 +105,11 @@ public class RegisterServiceImpl implements RegisterService {
 
         if(responseHisData.getCode()==0){
             Patient patient = new Patient();
-            patient.setCardNo(a+b+c+d+e);
+            patient.setCardNo(cardNo);
             patient.setName(param.getName());
             patientRepository.save(patient);
         }
-        param.setCardNo(a+b+c+d+e);
+        param.setCardNo(cardNo);
         return  param;
     }
 }

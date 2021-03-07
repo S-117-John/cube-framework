@@ -49,18 +49,18 @@ public class PatientServiceImpl implements PatientService {
     public void get(String cardNo, ResultListener linstener) {
         ResponseData<Patient> responseData = new ResponseData<>();
 
-        if(cardNo.length()>28){
-            String a = cardNo.substring(0,6);
-            String b = cardNo.substring(7,10);
-            String c = cardNo.substring(11,12);
-            String d = cardNo.substring(13,14);
-            String e = cardNo.substring(15,cardNo.length());
-            cardNo = a+b+c+d+e;
-        }
-
-        if(cardNo.indexOf("0")==0){
-            cardNo = cardNo.substring(1);
-        }
+//        if(cardNo.length()>28){
+//            String a = cardNo.substring(0,6);
+//            String b = cardNo.substring(7,10);
+//            String c = cardNo.substring(11,12);
+//            String d = cardNo.substring(13,14);
+//            String e = cardNo.substring(15,cardNo.length());
+//            cardNo = a+b+c+d+e;
+//        }
+//
+//        if(cardNo.indexOf("0")==0){
+//            cardNo = cardNo.substring(1);
+//        }
 
         try{
             Map<String,Object> paramMap = new HashMap<>(16);
@@ -119,15 +119,15 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public String delete(String cardNo) {
-
-        String cardNoParam = cardNo.substring(0,32);
-        String a = cardNoParam.substring(0,6);
-        String b = cardNoParam.substring(7,10);
-        String c = cardNoParam.substring(11,12);
-        String d = cardNoParam.substring(13,14);
-        String e = cardNoParam.substring(15,cardNoParam.length());
         Gson gson = new Gson();
-        String caNo = a+b+c+d+e;
+//        String cardNoParam = cardNo.substring(0,32);
+//        String a = cardNoParam.substring(0,6);
+//        String b = cardNoParam.substring(7,10);
+//        String c = cardNoParam.substring(11,12);
+//        String d = cardNoParam.substring(13,14);
+//        String e = cardNoParam.substring(15,cardNoParam.length());
+
+//        String caNo = a+b+c+d+e;
 //        if(caNo.indexOf("0")==0){
 //            caNo = caNo.substring(1);
 //        }
@@ -135,7 +135,7 @@ public class PatientServiceImpl implements PatientService {
         map.put("token",token);
         map.put("hosId",hosId);
         map.put("cardTypeName","身份证");
-        map.put("cardId",caNo);
+        map.put("cardId",cardNo);
 
         String param = gson.toJson(map);
 
