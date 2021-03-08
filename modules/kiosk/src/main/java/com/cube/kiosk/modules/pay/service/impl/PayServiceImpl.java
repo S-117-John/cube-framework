@@ -235,6 +235,8 @@ public class PayServiceImpl implements PayService {
 //        if(cardNo.indexOf("0")==0){
 //            cardNo = cardNo.substring(1);
 //        }
+        //充值卡号去28位
+        cardNo = cardNo.substring(0,27);
         packageParams.put("cardID", cardNo);
 
         String money = transactionData.getTxnAmt();
