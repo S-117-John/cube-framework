@@ -131,7 +131,7 @@ public class PatientController {
 //            String e = cardNo.substring(15,cardNo.length());
 //            cardNo = a+b+c+d+e;
 //        }
-        cardNo = cardNo.substring(0,27);
+        cardNo = cardNo.substring(0,28);
         Map<String,Object> paramMap = new HashMap<>(16);
         Gson gson = new Gson();
         paramMap.put("cardId",cardNo);
