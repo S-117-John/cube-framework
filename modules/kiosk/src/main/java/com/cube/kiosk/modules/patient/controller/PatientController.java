@@ -43,28 +43,6 @@ public class PatientController {
     private HosPatientRepository hosPatientRepository;
 
 
-    public String index(@RequestBody String cardNo){
-        final Object[] objects = new Object[1];
-        patientService.get(cardNo, new ResultListener() {
-            @Override
-            public void success(Object object) {
-                objects[0] = object;
-            }
-
-            @Override
-            public void error(Object object) {
-                objects[0] = object;
-            }
-
-            @Override
-            public void exception(Object object) {
-                objects[0] = object;
-            }
-        });
-        Gson gson = new Gson();
-
-        return gson.toJson(objects[0]);
-    }
 
 
     @ApiOperation(httpMethod = "POST",value = "撤销建卡")
@@ -123,15 +101,11 @@ public class PatientController {
     @ResponseApi
     public Object patient(@RequestBody String cardNo){
         Patient patient = new Patient();
-//        if(cardNo.length()>28){
-//            String a = cardNo.substring(0,6);
-//            String b = cardNo.substring(7,10);
-//            String c = cardNo.substring(11,12);
-//            String d = cardNo.substring(13,14);
-//            String e = cardNo.substring(15,cardNo.length());
-//            cardNo = a+b+c+d+e;
+
+//        cardNo = cardNo.substring(0,28);
+//        if(cardNo.lastIndexOf("0")==27){
+//            cardNo = cardNo.substring(0,27);
 //        }
-        cardNo = cardNo.substring(0,28);
         Map<String,Object> paramMap = new HashMap<>(16);
         Gson gson = new Gson();
         paramMap.put("cardId",cardNo);
