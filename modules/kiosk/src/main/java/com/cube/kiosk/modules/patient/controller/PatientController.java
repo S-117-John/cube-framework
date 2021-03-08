@@ -123,15 +123,15 @@ public class PatientController {
     @ResponseApi
     public Object patient(@RequestBody String cardNo){
         Patient patient = new Patient();
-        if(cardNo.length()>28){
-            String a = cardNo.substring(0,6);
-            String b = cardNo.substring(7,10);
-            String c = cardNo.substring(11,12);
-            String d = cardNo.substring(13,14);
-            String e = cardNo.substring(15,cardNo.length());
-            cardNo = a+b+c+d+e;
-        }
-
+//        if(cardNo.length()>28){
+//            String a = cardNo.substring(0,6);
+//            String b = cardNo.substring(7,10);
+//            String c = cardNo.substring(11,12);
+//            String d = cardNo.substring(13,14);
+//            String e = cardNo.substring(15,cardNo.length());
+//            cardNo = a+b+c+d+e;
+//        }
+        cardNo = cardNo.substring(0,27);
         Map<String,Object> paramMap = new HashMap<>(16);
         Gson gson = new Gson();
         paramMap.put("cardId",cardNo);
