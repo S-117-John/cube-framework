@@ -246,6 +246,7 @@ public class PayServiceImpl implements PayService {
         }else {
             packageParams.put("modeType", "1");
         }
+        cardNo = cardNo.substring(0,28);
         packageParams.put("cardID", cardNo);
         packageParams.put("operatorid", "6666");
         packageParams.put("patientName", patient.getName());
@@ -353,6 +354,11 @@ public class PayServiceImpl implements PayService {
     @Autowired
     private HosPatientRepository hosPatientRepository;
 
+    /**
+     * 住院充值
+     * @param merTradeNo
+     * @return
+     */
     @Override
     public String saveHos(String merTradeNo) {
         TransactionData transactionData = transactionRepository.findByMerTradeNoAndTranType(merTradeNo,"F");
@@ -392,16 +398,6 @@ public class PayServiceImpl implements PayService {
 //支付时间
         packageParams.put("payDate", simpleDateFormat.format(new Date()));
         packageParams.put("operatorid", "8888");
-
-
-
-
-
-
-
-
-
-
         String sign = HisMd5Sign.createSign(packageParams, token);
         packageParams.put("sign", sign);
         String param = gson.toJson(packageParams);
