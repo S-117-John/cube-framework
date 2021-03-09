@@ -103,7 +103,9 @@ public class PatientController {
         Patient patient = new Patient();
 
         cardNo = cardNo.substring(0,28);
-
+        if(cardNo.lastIndexOf("0")==27){
+            cardNo = cardNo.substring(0,27);
+        }
         Map<String,Object> paramMap = new HashMap<>(16);
         Gson gson = new Gson();
         paramMap.put("cardId",cardNo);
