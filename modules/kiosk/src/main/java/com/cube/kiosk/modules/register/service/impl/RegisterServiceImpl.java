@@ -62,9 +62,7 @@ public class RegisterServiceImpl implements RegisterService {
 
         String cardNo = cardNoParam;
 
-        if(cardNo.lastIndexOf("0")==27){
-            cardNo = cardNo.substring(0,27);
-        }
+        cardNo = cardNo.replaceAll("0+$", "");
 
         paramMap.put("cardId",cardNo);
         paramMap.put("patienttype","1");

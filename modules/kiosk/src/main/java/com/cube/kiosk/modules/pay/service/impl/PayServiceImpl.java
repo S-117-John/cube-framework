@@ -246,7 +246,7 @@ public class PayServiceImpl implements PayService {
         }else {
             packageParams.put("modeType", "1");
         }
-        cardNo = cardNo.substring(0,28);
+        cardNo = cardNo.replaceAll("0+$", "");
         packageParams.put("cardID", cardNo);
         packageParams.put("operatorid", "6666");
         packageParams.put("patientName", patient.getName());

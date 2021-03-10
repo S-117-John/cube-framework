@@ -102,10 +102,7 @@ public class PatientController {
     public Object patient(@RequestBody String cardNo){
         Patient patient = new Patient();
 
-        cardNo = cardNo.substring(0,28);
-        if(cardNo.lastIndexOf("0")==27){
-            cardNo = cardNo.substring(0,27);
-        }
+        cardNo = cardNo.replaceAll("0+$", "");
         Map<String,Object> paramMap = new HashMap<>(16);
         Gson gson = new Gson();
         paramMap.put("cardId",cardNo);
@@ -145,5 +142,12 @@ public class PatientController {
 
         }
         return patient;
+    }
+
+
+    public static void main(String[] args) {
+        String str = "890900089009000000";
+        String t = str.replaceAll("0+$", "");
+        System.out.println(t);
     }
 }
